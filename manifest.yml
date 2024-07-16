@@ -1,0 +1,24 @@
+permissions:
+  scopes:
+    - read:board-scope:jira-software
+    - read:issue-details:jira
+    - read:project:jira
+    - read:sprint:jira-software
+modules:
+  jira:projectPage:
+    - key: standup-summary-hello-world-project-page
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      title: 'Standup Summary'
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: src/frontend/index.jsx
+app:
+  runtime:
+    name: nodejs18.x
+  id: ari:cloud:ecosystem::app/eabac767-4f0f-45e3-a36c-fc5e8c0f1eb4
