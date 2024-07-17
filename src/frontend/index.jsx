@@ -1,24 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ForgeReconciler, { Button, useProductContext } from '@forge/react';
-import api, { invoke } from '@forge/bridge';
+import { invoke } from '@forge/bridge';
 
 const App = () => {
-    const data = useProductContext();
+  const data = useProductContext();
 
-    useEffect(() => {
-        if(data?.extension?.project.id)
-        {
-            (async function () {
-                    const result = await invoke('generate-summary', {projectId: data?.extension?.project.id});
-                    console.log(result);
-            })()
-        }
-    }, [data])
-    
-    const summaryGenerationHandler = () => {
-        
-    }
-  
+  const summaryGenerationHandler = async () => {
+    const response = await invoke('generate-summary', { projectId: data?.extension?.project.id });
+    console.log(response);
+  }
+
   return (
     <>
       <Button onClick={summaryGenerationHandler}>Generate Standup Summary</Button>
