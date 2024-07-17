@@ -3,13 +3,15 @@ import Issue from './Issue';
 import api, { route } from '@forge/api';
 import { message } from './helpers'
 
-const sendMessage = async (issues) => {
-    const SLACK_API = 'https://hooks.slack.com/services/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';
+const sendMessage = async (issues, remainingDays) => {
+    const SLACK_API = 'https://hooks.slack.com/services/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';
 
-    await fetch(SLACK_API, {
-        body: message(new Markdown(issues).generateMarkdown()),
+    const response = await fetch(SLACK_API, {
+        body: message(new Markdown(issues, remainingDays).generateMarkdown()),
         method: 'POST',
     });
+
+    console.log(response);
 }
 
 const getBoard = async (projectId) => {

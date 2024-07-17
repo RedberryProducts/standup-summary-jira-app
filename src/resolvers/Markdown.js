@@ -1,5 +1,5 @@
 class Markdown {
-    remainingDays = 2;
+    remainingDays = 0;
     stories = [];
 
     storyStatusIcons = {
@@ -8,8 +8,9 @@ class Markdown {
         'Done': '✅'
     };
 
-    constructor(issues) {
+    constructor(issues, remainingDays) {
         this.stories = issues.filter(i => i.issuetype === 'Story');
+        this.remainingDays = remainingDays;
     }
 
     generateMarkdown() {
@@ -20,7 +21,7 @@ class Markdown {
             const subtaskProgress = `[${curr.subtasks.length}/${curr.countDoneSubtasks()}]`;
             const storyStatusIcon = this.storyStatusIcons[curr.statusCategory];
 
-            return carry + `\n* ${storyStatusIcon} ${key} ${curr.summary}  ${subtaskProgress}`;
+            return carry + `\n\n* ${storyStatusIcon} ${key} ${curr.summary}  ${subtaskProgress}`;
         }, '*Stories*:');
 
         return remainingDays + stories;
