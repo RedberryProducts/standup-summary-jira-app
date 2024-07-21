@@ -5,9 +5,11 @@ import { issueTypePluralName } from './helpers'
 
 class Markdown {
     jiraUrl = '';
+    issues = [];
     remainingDays = 0;
     storiesByIssueType = [];
     bugGroups = [];
+    assignees = [];
 
     storyStatusIcons = {
         'To Do': '🔘',
@@ -20,9 +22,12 @@ class Markdown {
      * @param {Number} remainingDays 
      */
     constructor(issues, remainingDays) {
+        this.issues = issues;
         this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
         this.bugGroups = collect(issues).filter(el => el.issuetype === 'Bug');
         this.remainingDays = remainingDays;
+
+
     }
 
     compareFn(a, b) {
@@ -49,6 +54,65 @@ class Markdown {
         return remainingDays + issueTypeSummaries + bugGroupSummary;
     }
 
+    async generateBlocks() {
+        const markdown = await this.generateMarkdown();
+        const workToBeDone = this.generateWorkToBeDoneData();
+
+        const elements = workToBeDone
+            .map((el, name) => {
+                return {
+					type: "rich_text_list",
+					style: "bullet",
+					indent: 0,
+					border: 0,
+					elements: [
+						{
+							type: "rich_text_section",
+							elements: [
+								{
+									type: "text",
+									text: name,
+								}
+							]
+						}
+					]
+				};
+            }).toArray();
+        // console.log(elements)
+        return {
+            blocks: [
+                {
+                    type: "section",
+                    text: {
+                        "type": "mrkdwn",
+                        text: markdown
+                    }
+                },
+                {
+                    type: "divider"
+                },
+                {
+                    type: "rich_text",
+                    elements: [
+                        {
+                            type: "rich_text_section",
+                            elements: [
+                                {
+                                    type: "text",
+                                    style: {
+                                        bold: true,
+                                    },
+                                    text: "\n\nGoal of the Day:\n\n"
+                                }
+                            ]
+                        },
+                        ...elements,
+                    ]
+                },
+            ]
+        };
+    }
+
     /**
      * 
      * @param {String} name 
@@ -65,6 +129,31 @@ class Markdown {
 
                 return carry + `\n\n* ${storyStatusIcon} ${key} ${curr.summary}  ${subtaskProgress}`;
         }, `*${issueTypePluralName(name)}*:`);
+    }
+
+    generateWorkToBeDoneData() {
+        const assignedIssuesWithoutSubtasks = collect(this.issues).filter(el => el.subtasks.length === 0 && el.assignee);
+        
+        const subtasksWithAssignee = collect(this.issues)
+            .map(el => el.subtasks)
+            .flatten(1)
+            .filter(el => el.assignee);
+
+        const structuredSubtasksWithAssignee = subtasksWithAssignee
+            .groupBy('assignee')
+            .map(el => el.groupBy('parent.key'));
+
+        const finalData = structuredSubtasksWithAssignee.map(el => el.put('standaloneIssues', []));
+        
+        assignedIssuesWithoutSubtasks.each(el => {
+            if(! finalData.get(el.assignee)) {
+                finalData.put(el.assignee, collect({ standaloneIssues: [] }));
+            }
+
+            finalData.get(el.assignee).get('standaloneIssues').push(el);
+        });
+
+        return finalData;
     }
 }
 

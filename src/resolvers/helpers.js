@@ -1,17 +1,3 @@
-const message = (markdown) => {
-    return JSON.stringify({
-        blocks: [
-            {
-                type: "section",
-                text: {
-                    "type": "mrkdwn",
-                    text: markdown
-                }
-            }
-        ]
-    });
-}
-
 const countRemainingDays = (dates) => {
     const countDays = (date) => {
         const oneDay = 24 * 60 * 60 * 1000;
@@ -37,7 +23,6 @@ const issueTypePluralName = (name) => {
 }
 
 export {
-    message,
     countRemainingDays,
     issueTypePluralName,
 }

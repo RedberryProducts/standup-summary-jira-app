@@ -1,9 +1,10 @@
 permissions:
   scopes:
     - read:board-scope:jira-software
+    - read:sprint:jira-software
     - read:issue-details:jira
     - read:project:jira
-    - read:sprint:jira-software
+    - read:jira-work
     - read:jql:jira
     - storage:app
 modules:
@@ -14,6 +15,10 @@ modules:
         function: resolver
       render: native
       title: 'Standup Summary'
+      displayConditions:
+        projectKey:
+          - VX2
+          - IN
   function:
     - key: resolver
       handler: index.handler
@@ -23,4 +28,4 @@ resources:
 app:
   runtime:
     name: nodejs18.x
-  id: ari:cloud:ecosystem::app/eabac767-4f0f-45e3-a36c-fc5e8c0f1eb4
+  id: ari:cloud:ecosystem::app/a211556a-4091-4c58-b90f-fbe587e645ea

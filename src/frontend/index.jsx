@@ -4,12 +4,14 @@ import { invoke } from '@forge/bridge';
 
 const App = () => {
   const data = useProductContext();
-  const [projectId, setProjectId] = useState(null)
+  const [projectId, setProjectId] = useState(null);
+  const [projectKey, setProjectKey] = useState(null);
   const [slackEndpoint, setSlackEndpoint] = useState(null);
 
   useEffect(() => {
     if(data?.extension?.project.id) {
       setProjectId(data?.extension?.project.id);
+      setProjectKey(data?.extension?.project.key);
     }
   }, [data]);
 
@@ -29,7 +31,7 @@ const App = () => {
   }
 
   const summaryGenerationHandler = async () => {
-    const response = await invoke('generate-summary', { projectId });
+    const response = await invoke('generate-summary', { projectId, projectKey });
     console.log(response);
   }
 
