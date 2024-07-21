@@ -24,7 +24,20 @@ const countRemainingDays = (dates) => {
     return remainingDays;
 }
 
+const issueTypePluralName = (name) => {
+    const plurals = {
+        'Story': ':jira-story: Stories',
+        'Task': ':jira-task: Tasks',
+        'Bug': ':jira-bug: Bug Groups',
+    };
+
+    if(plurals[name] === undefined) return name;
+
+    return plurals[name];
+}
+
 export {
     message,
     countRemainingDays,
+    issueTypePluralName,
 }

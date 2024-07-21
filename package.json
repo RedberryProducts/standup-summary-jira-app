@@ -5,7 +5,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "./node_modules/.bin/eslint src/**/*"
+    "lint": "./node_modules/.bin/eslint src/**/*",
+    "debug": "forge tunnel --debug --debugFunctionHandlers index.handler --debugStartingPort 9229"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
@@ -15,6 +16,7 @@
     "@forge/bridge": "3.4.0",
     "@forge/react": "10.3.0",
     "@forge/resolver": "1.5.36",
+    "collect.js": "^4.36.1",
     "react": "^18.2.0"
   }
 }

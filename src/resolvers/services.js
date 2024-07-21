@@ -1,17 +1,14 @@
 import Markdown from './Markdown';
 import Issue from './Issue';
-import api, { route } from '@forge/api';
+import api, { route, storage } from '@forge/api';
 import { message } from './helpers'
 
-const sendMessage = async (issues, remainingDays) => {
-    const SLACK_API = 'https://hooks.slack.com/services/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';
+const sendMessage = async (issues, remainingDays, projectId) => {
+    const SLACK_API = await storage.get(`slack-endpoint-${projectId}`);
+    const markdown = await (new Markdown(issues, remainingDays)).generateMarkdown();
+    const body = message(markdown);
 
-    const response = await fetch(SLACK_API, {
-        body: message(new Markdown(issues, remainingDays).generateMarkdown()),
-        method: 'POST',
-    });
-
-    console.log(response);
+    await fetch(SLACK_API, { body, method: 'POST' });
 }
 
 const getBoard = async (projectId) => {

@@ -18,7 +18,6 @@ class Issue {
         this.statusCategory = rawIssue.fields.status.statusCategory.name;
 
         this.subtasks = this.issuetype === 'Subtask' ? null : rawIssue.fields.subtasks.map(el => new Issue(el));
-        // this.subtasks = this.issuetype === 'Subtask' ? null : rawIssue.fields.subtasks;
     }
 
     countDoneSubtasks() {

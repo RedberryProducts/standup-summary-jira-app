@@ -5,6 +5,7 @@ permissions:
     - read:project:jira
     - read:sprint:jira-software
     - read:jql:jira
+    - storage:app
 modules:
   jira:projectPage:
     - key: standup-summary-hello-world-project-page

@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Attach Forge App Debugger",
+            "port": 9229,
+            "request": "attach",
+            "type": "node",
+            "sourceMaps": true
+        }
+    ]
+}
