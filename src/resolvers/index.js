@@ -2,7 +2,6 @@ import Resolver from '@forge/resolver';
 import { sendMessage, getBoard, getActiveSprints, getIssuesForSprints, getSubtasksForIssues } from './services';
 import { storage } from '@forge/api';
 import { countRemainingDays } from './helpers';
-import { collect } from 'collect.js';
 
 const resolver = new Resolver();
 
@@ -13,7 +12,6 @@ resolver.define('generate-summary', async (req) => {
 
   const issues = await getIssuesForSprints(activeSprints, projectKey);
   await Promise.all(issues.map(el => el.fetchSubtasks()));
-
   const remainingDays = countRemainingDays(activeSprints.map(el => el.endDate));
   await sendMessage(issues, remainingDays, projectId);
   return 'ok';

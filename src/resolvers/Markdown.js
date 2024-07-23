@@ -2,6 +2,7 @@ import api, { route } from '@forge/api';
 import collect, { Collection } from 'collect.js';
 import Issue from './Issue';
 import { issueTypePluralName } from './helpers'
+import SlackMessageBlock from './SlackMessageBlock'
 
 class Markdown {
     jiraUrl = '';
@@ -26,8 +27,6 @@ class Markdown {
         this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
         this.bugGroups = collect(issues).filter(el => el.issuetype === 'Bug');
         this.remainingDays = remainingDays;
-
-
     }
 
     compareFn(a, b) {
@@ -36,8 +35,12 @@ class Markdown {
     }
 
     async getJiraInstanceUrl() {
+        if(this.jiraUrl) return this.jiraUrl;
+
         const { baseUrl } = await (await api.asApp().requestJira(route`/rest/api/2/serverInfo`)).json();
         this.jiraUrl = baseUrl;
+
+        return baseUrl;
     }
 
     async generateMarkdown() {
@@ -57,28 +60,16 @@ class Markdown {
     async generateBlocks() {
         const markdown = await this.generateMarkdown();
         const workToBeDone = this.generateWorkToBeDoneData();
+        const jiraUrl = await this.getJiraInstanceUrl();
 
         const elements = workToBeDone
             .map((el, name) => {
-                return {
-					type: "rich_text_list",
-					style: "bullet",
-					indent: 0,
-					border: 0,
-					elements: [
-						{
-							type: "rich_text_section",
-							elements: [
-								{
-									type: "text",
-									text: name,
-								}
-							]
-						}
-					]
-				};
-            }).toArray();
-        // console.log(elements)
+                return [
+                    SlackMessageBlock.createAssigneeListItem(name),
+                    ...el.get('standaloneIssues').map(el => SlackMessageBlock.createStandaloneListItem(el, jiraUrl)),
+                ]
+            }).toArray().flat();
+        
         return {
             blocks: [
                 {
