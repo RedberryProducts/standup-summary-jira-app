@@ -64,9 +64,19 @@ class Markdown {
 
         const elements = workToBeDone
             .map((el, name) => {
+                const storiesWithSubtasks = el
+                    .filter((el, idx) => idx !== 'standaloneIssues')
+                    .map((el, storyKey) => {
+                        const [story] = this.issues.filter(el => el.key === storyKey);
+                        return SlackMessageBlock.createSubtasksWithStory(el,story, jiraUrl);
+                })
+                .flatten(1)
+                .toArray();
+                
                 return [
                     SlackMessageBlock.createAssigneeListItem(name),
                     ...el.get('standaloneIssues').map(el => SlackMessageBlock.createStandaloneListItem(el, jiraUrl)),
+                    ...storiesWithSubtasks,
                 ]
             }).toArray().flat();
         

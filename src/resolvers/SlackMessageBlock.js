@@ -20,7 +20,10 @@ class SlackMessageBlock
                         {
                             type: "text",
                             text: name,
-                        }
+                            style: {
+                                bold: true,
+                            }
+                        },
                     ]
                 }
             ]
@@ -56,6 +59,71 @@ class SlackMessageBlock
                         }
                     ]
                 },
+            ]
+        };
+    }
+
+    static createSubtasksWithStory(subtasks, story, jiraUrl) {
+        return [
+            {
+                type: "rich_text_list",
+                style: "bullet",
+                indent: 1,
+                border: 0,
+                elements: [
+                    {
+                        type: "rich_text_section",
+                        elements: [
+                            {
+                                type: "emoji",
+                                name: this.issueIcons[story.issuetype],
+                            },
+                            {
+                                type: "text",
+                                text: " "
+                            },
+                            {
+                                type: "link",
+                                url: `${jiraUrl}/browse/${story.key}`,
+                                text: story.key,
+                            }
+                        ]
+                    }
+                ]
+            },
+            ...subtasks.map(el => this.createSubtaskListItem(el, jiraUrl)),
+        ];
+    }
+
+    static createSubtaskListItem(subtask, jiraUrl) {
+        return {
+            type: "rich_text_list",
+            style: "bullet",
+            indent: 2,
+            border: 0,
+            elements: [
+                {
+                    type: "rich_text_section",
+                    elements: [
+                        {
+                            type: "emoji",
+                            name: "jira-subtask"
+                        },
+                        {
+                            type: "text",
+                            text: " ["
+                        },
+                        {
+                            type: "link",
+                            url: `${jiraUrl}/browse/${subtask.key}`,
+                            text: subtask.key,
+                        },
+                        {
+                            type: "text",
+                            text: `] ${subtask.summary}`
+                        }
+                    ]
+                }
             ]
         };
     }
