@@ -11,6 +11,7 @@ modules:
   jira:projectPage:
     - key: standup-summary-hello-world-project-page
       resource: main
+      icon: resource:assets;standup-summary.ico
       resolver:
         function: resolver
       render: native
@@ -25,6 +26,8 @@ modules:
 resources:
   - key: main
     path: src/frontend/index.jsx
+  - key: assets
+    path: src/assets
 app:
   runtime:
     name: nodejs18.x
