@@ -1,46 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Button, useProductContext, Textfield, Text, Icon } from '@forge/react';
+import ForgeReconciler, {
+  LoadingButton, 
+  Textfield,
+  Box,
+  Button, 
+  Text, 
+  Icon,
+  Inline,
+} from '@forge/react';
+import {SettingsModal} from './components'
 import { invoke } from '@forge/bridge';
+import useIndex from './useIndex';
 
 const App = () => {
-  const data = useProductContext();
-  const [projectId, setProjectId] = useState(null);
-  const [projectKey, setProjectKey] = useState(null);
-  const [slackEndpoint, setSlackEndpoint] = useState(null);
-
-  useEffect(() => {
-    if(data?.extension?.project.id) {
-      setProjectId(data?.extension?.project.id);
-      setProjectKey(data?.extension?.project.key);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if(projectId)
-    {
-      (async() => {
-        const response = await invoke('get-slack-endpoint', { projectId });
-        setSlackEndpoint(response);
-      })()
-    }
-  }, [projectId]);
-
-  const slackEndpointUpdateHandler = async (e) => {
-    setSlackEndpoint(e.target.value);
-    await invoke('set-slack-endpoint', { projectId, endpoint: e.target.value });
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const [settingsOpened, setSettingsOpened] = useState(false);
+  const {projectId, projectKey} = useIndex();
 
   const summaryGenerationHandler = async () => {
+    setIsLoading(true);
     const response = await invoke('generate-summary', { projectId, projectKey });
+    setIsLoading(false);
     console.log(response);
   }
 
   return (
     <>
-      <Icon glyph='settings' label='Settings' size='large' />
-      <Textfield width={600} name='Slack Channel Endpoint' value={slackEndpoint} onChange={slackEndpointUpdateHandler} />
-      <Text />
-      <Button onClick={summaryGenerationHandler}>Generate Standup Summary</Button>
+      <Inline space='space.100'>
+        <Button onClick={() => setSettingsOpened(true)} appearance='subtle'>
+          <Icon glyph='settings' label='Settings' size='large' />
+        </Button>
+        <LoadingButton onClick={summaryGenerationHandler} isLoading={isLoading}>Generate Standup Summary</LoadingButton>
+      </Inline>
+      <SettingsModal isVisible={settingsOpened} setIsVisible={setSettingsOpened} />
     </>
   );
 };

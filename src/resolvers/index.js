@@ -17,16 +17,26 @@ resolver.define('generate-summary', async (req) => {
   return 'ok';
 });
 
-resolver.define('get-slack-endpoint', async (req) => {
+resolver.define('get-settings', async (req) => {
   const { projectId } = req.payload;
-  const endpoint = await storage.get(`slack-endpoint-${projectId}`) || '';
-  return endpoint;
+  const value = await storage.get(`settings-${projectId}`) || {};
+  console.log({get: value});
+  return value;
 });
 
 
-resolver.define('set-slack-endpoint', async (req) => {
-  const { projectId, endpoint } = req.payload;
-  await storage.set(`slack-endpoint-${projectId}`, endpoint);
+resolver.define('set-setting', async (req) => {
+  const { projectId, settings } = req.payload;
+  const keys = Object.keys(settings);
+
+  const currentSettings = await storage.get(`settings-${projectId}`) || {};
+  
+  keys.forEach(key => {
+    currentSettings[key] = settings[key];
+  });
+  console.log(keys);
+
+  await storage.set(`settings-${projectId}`, settings);
 });
 
 
