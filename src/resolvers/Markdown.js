@@ -111,7 +111,7 @@ class Markdown {
                                     style: {
                                         bold: true,
                                     },
-                                    text: "\n\nGoal of the Day:\n\n"
+                                    text: "\n\nJob to be Dones:\n\n"
                                 }
                             ]
                         },
