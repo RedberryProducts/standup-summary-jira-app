@@ -6,6 +6,8 @@ const useSettingsModal = () => {
     const [slackEndpoint, setSlackEndpoint] = useState('');
     const [sprintStatusEnabled, setSprintStatusEnabled] = useState(false);
     const [workProgressEnabled, setWorkProgressEnabled] = useState(false);
+    const [goalsOfTheDay, setGoalsOfTheDay] = useState([]);
+    const [newGoalOfTheDay, setNewGoalOfTheDay] = useState("");
 
     const {projectId} = useIndex();
 
@@ -16,6 +18,7 @@ const useSettingsModal = () => {
                 setSlackEndpoint(data.slackEndpoint || '');
                 setSprintStatusEnabled(data.sprintStatusEnabled);
                 setWorkProgressEnabled(data.workProgressEnabled);
+                setGoalsOfTheDay(data.goalsOfTheDay ?? [])
             })();
         }
     }, [projectId]);
@@ -24,14 +27,43 @@ const useSettingsModal = () => {
         await invoke('set-setting', {projectId, settings})
     }
 
+    const removeGoalOfTheDay = (goalToRemove) => {
+        const updatedGoalsOfTheDay = goalsOfTheDay.filter(goal => goal !== goalToRemove);
+        setGoalsOfTheDay(updatedGoalsOfTheDay);
+        setSetting({ goalsOfTheDay: updatedGoalsOfTheDay });
+    };
+
+    const addNewGoalOfTheDay = () => {
+        if(!goalsOfTheDay || !newGoalOfTheDay || !newGoalOfTheDay.trim()) return
+
+        const updatedGoalsOfTheDay = [...goalsOfTheDay, newGoalOfTheDay];
+        setGoalsOfTheDay(updatedGoalsOfTheDay);
+        setSetting({ goalsOfTheDay: updatedGoalsOfTheDay });
+        setNewGoalOfTheDay(""); 
+       
+    };
+
+    const clearGoalsOfTheDay = () => {
+        setSetting({ goalsOfTheDay: [] });
+        setGoalsOfTheDay([])
+        setNewGoalOfTheDay('')   
+    }
+
     return {
         slackEndpoint,
         sprintStatusEnabled,
         workProgressEnabled,
+        goalsOfTheDay,
+        newGoalOfTheDay,
         setSlackEndpoint,
         setSprintStatusEnabled,
         setWorkProgressEnabled,
+        setGoalsOfTheDay,
+        setNewGoalOfTheDay,
         setSetting,
+        removeGoalOfTheDay,
+        addNewGoalOfTheDay,
+        clearGoalsOfTheDay
     };
 }
 

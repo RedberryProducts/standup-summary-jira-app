@@ -1,5 +1,6 @@
 import React from "react";
-import useSettingsModal from "./useSettingsModal";
+import GoalsOfTheDayList from "../GoalsOfTheDayList/GoalsOfTheDayList";
+
 import { 
     ModalTransition,
     ModalFooter,
@@ -13,19 +14,26 @@ import {
     Modal, 
     Text, 
     Box,
+    Strong,
+    TextArea,
   } from '@forge/react';
 
-const SettingsModal = ({ isVisible, setIsVisible }) => {
-    const {
-        setSetting, 
-        slackEndpoint, 
-        sprintStatusEnabled, 
-        workProgressEnabled,
-        setSlackEndpoint,
-        setSprintStatusEnabled,
-        setWorkProgressEnabled,
-    } = useSettingsModal();
-
+const SettingsModal = ({ 
+    isVisible, 
+    setIsVisible,     
+    setSetting, 
+    slackEndpoint, 
+    sprintStatusEnabled, 
+    workProgressEnabled,
+    goalsOfTheDay,
+    newGoalOfTheDay,
+    setSlackEndpoint,
+    setSprintStatusEnabled,
+    setWorkProgressEnabled,
+    removeGoalOfTheDay,
+    addNewGoalOfTheDay,
+    setNewGoalOfTheDay 
+}) => {
     return (
         isVisible && <ModalTransition>
             <Modal>
@@ -43,6 +51,33 @@ const SettingsModal = ({ isVisible, setIsVisible }) => {
                     placeholder='Slack Endpoint' 
                     value={slackEndpoint}
                 />
+                <Box paddingBlock='space.300'>
+                    <Inline alignBlock='center'>
+                        <Text>Sprint Goals:</Text>
+                    </Inline>
+                    <Box paddingBlock="space.300">
+                        {goalsOfTheDay.length === 0 ? (
+                            <Text>
+                                <Strong>Goals of the Day...</Strong>
+                            </Text>
+                        ) : (
+                            <GoalsOfTheDayList goalsOfTheDay={goalsOfTheDay} handleRemoveClick={removeGoalOfTheDay} />
+                        )}
+                    </Box>
+                    <Inline  space='space.100' alignBlock='center'>
+                        <TextArea 
+                            width={600} 
+                            name='Add new Goal of the Day' 
+                            placeholder='Goal of the Day' 
+                            value={newGoalOfTheDay}
+                            onChange={(e) => setNewGoalOfTheDay(e.target.value)}
+                        />
+                        <Button appearance="primary" onClick={addNewGoalOfTheDay}>
+                            Add Goal
+                        </Button>
+                    </Inline>
+                    
+                </Box>
                 <Box paddingBlock='space.300'>
                     <Inline alignBlock='center'>
                         <Text>Sprint Status</Text>

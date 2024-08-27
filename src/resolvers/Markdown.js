@@ -8,6 +8,7 @@ class Markdown {
     jiraUrl = '';
     issues = [];
     remainingDays = 0;
+    goalsOfTheDay = [];
     storiesByIssueType = [];
     bugGroups = [];
     assignees = [];
@@ -22,11 +23,12 @@ class Markdown {
      * @param {Issue[]} issues 
      * @param {Number} remainingDays 
      */
-    constructor(issues, remainingDays) {
+    constructor(issues, remainingDays, goalsOfTheDay) {
         this.issues = issues;
         this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
         this.bugGroups = collect(issues).filter(el => el.issuetype === 'Bug');
         this.remainingDays = remainingDays;
+        this.goalsOfTheDay = goalsOfTheDay
     }
 
     compareFn(a, b) {
@@ -45,16 +47,15 @@ class Markdown {
 
     async generateMarkdown() {
         await this.getJiraInstanceUrl();
-        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n`
+        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n\n\n\n`
 
-        const issueTypeSummaries = this
-            .issuesByIssueType
-            .map((el, idx) => this.generateIssueTypeSummary(idx, el))
-            .reduce((carry, item) => carry + item + '\n\n\n', '');
-        
-        const bugGroupSummary = this.generateIssueTypeSummary('Bug', this.bugGroups); 
+        const goalsOfTheDayList = this.goalsOfTheDay
+        ?.map((goal, index) => `  ${index + 1}.  ${goal}`)
+        .join('\n\n');
 
-        return remainingDays + issueTypeSummaries + bugGroupSummary;
+        const goalsOfTheDay = `*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n`;
+  
+        return  goalsOfTheDayList.length > 0 ? remainingDays + goalsOfTheDay : remainingDays;
     }
 
     async generateBlocks() {
