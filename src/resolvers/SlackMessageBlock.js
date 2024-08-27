@@ -19,7 +19,7 @@ class SlackMessageBlock
                     elements: [
                         {
                             type: "text",
-                            text: name,
+                            text: `${name}\n\n`,
                             style: {
                                 bold: true,
                             }
@@ -106,10 +106,6 @@ class SlackMessageBlock
                     type: "rich_text_section",
                     elements: [
                         {
-                            type: "emoji",
-                            name: "jira-subtask"
-                        },
-                        {
                             type: "text",
                             text: " ["
                         },
@@ -126,6 +122,18 @@ class SlackMessageBlock
                 }
             ]
         };
+        
+    }
+    static createEmptyLines() {
+        return     {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "\n\n"
+                }
+            ]
+        }
     }
 }
 

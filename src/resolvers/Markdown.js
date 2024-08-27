@@ -78,6 +78,7 @@ class Markdown {
                     SlackMessageBlock.createAssigneeListItem(name),
                     ...el.get('standaloneIssues').map(el => SlackMessageBlock.createStandaloneListItem(el, jiraUrl)),
                     ...storiesWithSubtasks,
+                    SlackMessageBlock.createEmptyLines(),
                 ]
             }).toArray().flat();
         
@@ -91,11 +92,17 @@ class Markdown {
                     }
                 },
                 {
-                    type: "divider"
-                },
-                {
                     type: "rich_text",
                     elements: [
+                        {
+                            type: "rich_text_section",
+                            elements: [
+                                {
+                                    type: "text",
+                                    text: "\n\n\n\n\n\n"
+                                }
+                            ]
+                        },
                         {
                             type: "rich_text_section",
                             elements: [
