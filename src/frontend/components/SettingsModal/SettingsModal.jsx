@@ -53,12 +53,12 @@ const SettingsModal = ({
                 />
                 <Box paddingBlock='space.300'>
                     <Inline alignBlock='center'>
-                        <Text>Sprint Goals:</Text>
+                        <Text>Goals of the Day:</Text>
                     </Inline>
                     <Box paddingBlock="space.300">
                         {goalsOfTheDay.length === 0 ? (
                             <Text>
-                                <Strong>Goals of the Day...</Strong>
+                                <Strong>No Goals yet...</Strong>
                             </Text>
                         ) : (
                             <GoalsOfTheDayList goalsOfTheDay={goalsOfTheDay} handleRemoveClick={removeGoalOfTheDay} />
