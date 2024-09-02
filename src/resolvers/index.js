@@ -1,7 +1,7 @@
 import Resolver from '@forge/resolver';
-import { sendMessage, getBoard, getActiveSprints, getIssuesForSprints, getSubtasksForIssues } from './services';
+import { sendMessage, getBoard, getActiveSprints, getIssuesForSprints, getBoardUnreleasedVersions } from './services';
 import { storage } from '@forge/api';
-import { countRemainingDays, getLatestSprintGoal } from './helpers';
+import { countRemainingDays, selectLatestAttribute} from './helpers';
 
 const resolver = new Resolver();
 
@@ -14,8 +14,10 @@ resolver.define('generate-summary', async (req) => {
   await Promise.all(issues.map(el => el.fetchSubtasks()));
   const remainingDays = countRemainingDays(activeSprints.map(el => el.endDate));
   const { goalsOfTheDay } = await storage.get(`settings-${projectId}`) || {};
-  const sprintGoal =  getLatestSprintGoal(activeSprints.map(({ goal, endDate }) => ({ goal, endDate }))); 
-  await sendMessage(issues, remainingDays, projectId, goalsOfTheDay, sprintGoal);
+  const sprintGoal =  selectLatestAttribute(activeSprints.map(({ goal, endDate }) => ({ goal, endDate })), 'endDate', 'goal'); 
+  const boardUnreleasedVersions = await getBoardUnreleasedVersions(foundBoard.id)
+  const latestUnreleasedVersion = selectLatestAttribute(boardUnreleasedVersions.map(({ name, releaseDate }) => ({ name, releaseDate })), 'releaseDate', 'name')
+  await sendMessage(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId);
   return 'ok';
 });
 

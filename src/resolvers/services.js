@@ -2,9 +2,9 @@ import Markdown from './Markdown';
 import Issue from './Issue';
 import api, { route, storage } from '@forge/api';
 
-const sendMessage = async (issues, remainingDays, projectId, goalsOfTheDay, sprintGoal) => {
+const sendMessage = async (issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId) => {
     const SLACK_API = await storage.get(`slack-endpoint-${projectId}`);
-    const body = await (new Markdown(issues, remainingDays, goalsOfTheDay, sprintGoal)).generateBlocks();
+    const body = await (new Markdown(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay)).generateBlocks();
 
     await api.fetch(SLACK_API, {
         body: JSON.stringify(body),
@@ -41,10 +41,16 @@ const getIssuesForSprints = async (sprints, projectKey) => {
     return transformedIssues;
 }
 
+const getBoardUnreleasedVersions = async (boardId) => {
+    const { values: versions } = await (await api.asApp().requestJira(route`rest/agile/1.0/board/${boardId}/version?released=false`)).json();    
+    return versions;
+}
+
 export {
     getBoard,
     sendMessage,
     getActiveSprints,
     getIssuesForSprints,
     getSubtasksForIssue,
+    getBoardUnreleasedVersions
 }

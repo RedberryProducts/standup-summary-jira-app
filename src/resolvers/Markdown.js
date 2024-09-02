@@ -6,8 +6,9 @@ import SlackMessageBlock from './SlackMessageBlock'
 
 class Markdown {
     jiraUrl = '';
-    sprintGoal = '';
     issues = [];
+    latestUnreleasedVersion = '';
+    sprintGoal = '';
     remainingDays = 0;
     goalsOfTheDay = [];
     storiesByIssueType = [];
@@ -22,15 +23,20 @@ class Markdown {
 
     /**
      * @param {Issue[]} issues 
+     * @param {String} latestUnreleasedVersion 
+     * @param {String} sprintGoal 
      * @param {Number} remainingDays 
+     * @param {String[]} goalsOfTheDay 
      */
-    constructor(issues, remainingDays, goalsOfTheDay, sprintGoal) {
+    constructor(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay) {
         this.issues = issues;
         this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
         this.bugGroups = collect(issues).filter(el => el.issuetype === 'Bug');
+        this.latestUnreleasedVersion = latestUnreleasedVersion;
+        this.sprintGoal = sprintGoal;
         this.remainingDays = remainingDays;
         this.goalsOfTheDay = goalsOfTheDay;
-        this.sprintGoal = sprintGoal;
+        
     }
 
     compareFn(a, b) {
@@ -49,13 +55,14 @@ class Markdown {
 
     async generateMarkdown() {
         await this.getJiraInstanceUrl();
-        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n\n\n\n`
+        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n\n`
 
         const goalsOfTheDayList = this.goalsOfTheDay
         ?.map((goal, index) => `  ${index + 1}.  ${goal}`)
         .join('\n\n');
 
         let markdown = [
+            this.latestUnreleasedVersion.length > 0 ? `\n\n\n*Release Version : ${this.latestUnreleasedVersion}*\n\n` : '',
             this.sprintGoal.length > 0 ? `*Sprint Goal*: ${this.sprintGoal}\n\n` : '',
             remainingDays,
             goalsOfTheDayList.length > 0 ? `\n\n*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n` : ''
