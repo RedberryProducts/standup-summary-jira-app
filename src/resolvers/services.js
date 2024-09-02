@@ -5,7 +5,11 @@ import api, { route, storage } from '@forge/api';
 const sendMessage = async (issues, remainingDays, projectId, goalsOfTheDay) => {
     const SLACK_API = await storage.get(`slack-endpoint-${projectId}`);
     const body = await (new Markdown(issues, remainingDays, goalsOfTheDay)).generateBlocks();
-    await fetch(SLACK_API, { body: JSON.stringify(body), method: 'POST' });
+    
+    await api.fetch(SLACK_API, {
+        body: JSON.stringify(body),
+        method: 'POST',
+    });
 }
 
 const getSubtasksForIssue = async (projectKey, parentKey) => {

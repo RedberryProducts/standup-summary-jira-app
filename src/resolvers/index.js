@@ -14,7 +14,6 @@ resolver.define('generate-summary', async (req) => {
   await Promise.all(issues.map(el => el.fetchSubtasks()));
   const remainingDays = countRemainingDays(activeSprints.map(el => el.endDate));
   const { goalsOfTheDay } = await storage.get(`settings-${projectId}`) || {};
-  
   await sendMessage(issues, remainingDays, projectId, goalsOfTheDay);
   return 'ok';
 });
