@@ -2,10 +2,14 @@ import Markdown from './Markdown';
 import Issue from './Issue';
 import api, { route, storage } from '@forge/api';
 
-const sendMessage = async (issues, remainingDays, projectId) => {
+const sendMessage = async (issues, remainingDays, projectId, goalsOfTheDay, sprintGoal) => {
     const SLACK_API = await storage.get(`slack-endpoint-${projectId}`);
-    const body = await (new Markdown(issues, remainingDays)).generateBlocks();
-    await fetch(SLACK_API, { body: JSON.stringify(body), method: 'POST' });
+    const body = await (new Markdown(issues, remainingDays, goalsOfTheDay, sprintGoal)).generateBlocks();
+
+    await api.fetch(SLACK_API, {
+        body: JSON.stringify(body),
+        method: 'POST',
+    });
 }
 
 const getSubtasksForIssue = async (projectKey, parentKey) => {

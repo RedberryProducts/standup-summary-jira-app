@@ -6,8 +6,10 @@ import SlackMessageBlock from './SlackMessageBlock'
 
 class Markdown {
     jiraUrl = '';
+    sprintGoal = '';
     issues = [];
     remainingDays = 0;
+    goalsOfTheDay = [];
     storiesByIssueType = [];
     bugGroups = [];
     assignees = [];
@@ -22,11 +24,13 @@ class Markdown {
      * @param {Issue[]} issues 
      * @param {Number} remainingDays 
      */
-    constructor(issues, remainingDays) {
+    constructor(issues, remainingDays, goalsOfTheDay, sprintGoal) {
         this.issues = issues;
         this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
         this.bugGroups = collect(issues).filter(el => el.issuetype === 'Bug');
         this.remainingDays = remainingDays;
+        this.goalsOfTheDay = goalsOfTheDay;
+        this.sprintGoal = sprintGoal;
     }
 
     compareFn(a, b) {
@@ -45,16 +49,19 @@ class Markdown {
 
     async generateMarkdown() {
         await this.getJiraInstanceUrl();
-        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n`
+        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n\n\n\n`
 
-        const issueTypeSummaries = this
-            .issuesByIssueType
-            .map((el, idx) => this.generateIssueTypeSummary(idx, el))
-            .reduce((carry, item) => carry + item + '\n\n\n', '');
-        
-        const bugGroupSummary = this.generateIssueTypeSummary('Bug', this.bugGroups); 
+        const goalsOfTheDayList = this.goalsOfTheDay
+        ?.map((goal, index) => `  ${index + 1}.  ${goal}`)
+        .join('\n\n');
 
-        return remainingDays + issueTypeSummaries + bugGroupSummary;
+        let markdown = [
+            this.sprintGoal.length > 0 ? `*Sprint Goal*: ${this.sprintGoal}\n\n` : '',
+            remainingDays,
+            goalsOfTheDayList.length > 0 ? `\n\n*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n` : ''
+        ].filter(Boolean).join('');    
+       
+        return markdown;
     }
 
     async generateBlocks() {
@@ -77,6 +84,7 @@ class Markdown {
                     SlackMessageBlock.createAssigneeListItem(name),
                     ...el.get('standaloneIssues').map(el => SlackMessageBlock.createStandaloneListItem(el, jiraUrl)),
                     ...storiesWithSubtasks,
+                    SlackMessageBlock.createEmptyLines(),
                 ]
             }).toArray().flat();
         
@@ -90,11 +98,17 @@ class Markdown {
                     }
                 },
                 {
-                    type: "divider"
-                },
-                {
                     type: "rich_text",
                     elements: [
+                        {
+                            type: "rich_text_section",
+                            elements: [
+                                {
+                                    type: "text",
+                                    text: "\n\n\n\n\n\n"
+                                }
+                            ]
+                        },
                         {
                             type: "rich_text_section",
                             elements: [
@@ -103,7 +117,7 @@ class Markdown {
                                     style: {
                                         bold: true,
                                     },
-                                    text: "\n\nGoal of the Day:\n\n"
+                                    text: "\n\nJob to be Dones:\n\n"
                                 }
                             ]
                         },

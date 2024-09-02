@@ -1,7 +1,7 @@
 import Resolver from '@forge/resolver';
 import { sendMessage, getBoard, getActiveSprints, getIssuesForSprints, getSubtasksForIssues } from './services';
 import { storage } from '@forge/api';
-import { countRemainingDays } from './helpers';
+import { countRemainingDays, getLatestSprintGoal } from './helpers';
 
 const resolver = new Resolver();
 
@@ -13,7 +13,9 @@ resolver.define('generate-summary', async (req) => {
   const issues = await getIssuesForSprints(activeSprints, projectKey);
   await Promise.all(issues.map(el => el.fetchSubtasks()));
   const remainingDays = countRemainingDays(activeSprints.map(el => el.endDate));
-  await sendMessage(issues, remainingDays, projectId);
+  const { goalsOfTheDay } = await storage.get(`settings-${projectId}`) || {};
+  const sprintGoal =  getLatestSprintGoal(activeSprints.map(({ goal, endDate }) => ({ goal, endDate }))); 
+  await sendMessage(issues, remainingDays, projectId, goalsOfTheDay, sprintGoal);
   return 'ok';
 });
 
@@ -36,7 +38,7 @@ resolver.define('set-setting', async (req) => {
   });
   console.log(keys);
 
-  await storage.set(`settings-${projectId}`, settings);
+  await storage.set(`settings-${projectId}`, currentSettings);
 });
 
 

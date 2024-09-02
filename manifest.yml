@@ -7,6 +7,10 @@ permissions:
     - read:jira-work
     - read:jql:jira
     - storage:app
+  external:
+    fetch:
+      backend:
+        - https://hooks.slack.com
 modules:
   jira:projectPage:
     - key: standup-summary-hello-world-project-page

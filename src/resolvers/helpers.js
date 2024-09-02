@@ -22,7 +22,15 @@ const issueTypePluralName = (name) => {
     return plurals[name];
 }
 
+function getLatestSprintGoal(sprints) {
+    const { goal } = sprints.reduce((latest, current) => {
+      return new Date(current.endDate) > new Date(latest.endDate) ? current : latest;
+    });
+    return goal;
+  }
+  
 export {
     countRemainingDays,
     issueTypePluralName,
+    getLatestSprintGoal
 }
