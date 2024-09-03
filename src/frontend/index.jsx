@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import useSettingsModal from './components/SettingsModal/useSettingsModal';
+import useSettings from './components/Settings/useSettings';
 import ForgeReconciler, {
   LoadingButton, 
   Button, 
   Icon,
   Inline,
 } from '@forge/react';
-import { SettingsModal } from './components'
+import { Settings } from './components'
 import { invoke } from '@forge/bridge';
 import useIndex from './useIndex';
 
@@ -28,7 +28,7 @@ const App = () => {
     addNewGoalOfTheDay,
     setNewGoalOfTheDay,
     clearGoalsOfTheDay
-} = useSettingsModal();
+} = useSettings();
 
   const summaryGenerationHandler = async () => {
     setIsLoading(true);
@@ -46,7 +46,7 @@ const App = () => {
         </Button>
         <LoadingButton onClick={summaryGenerationHandler} isLoading={isLoading}>Generate Standup Summary</LoadingButton>
       </Inline>
-      <SettingsModal 
+      <Settings
           isVisible={settingsOpened} 
           setIsVisible={setSettingsOpened} 
           setSetting={setSetting} 

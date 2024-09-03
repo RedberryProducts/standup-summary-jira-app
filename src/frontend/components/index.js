@@ -1,1 +1,1 @@
-export { default as SettingsModal } from './SettingsModal/SettingsModal'
+export { default as Settings } from './Settings/Settings'
