@@ -11,7 +11,7 @@ const GoalsOfTheDayList = ({ goalsOfTheDay, handleRemoveClick }) => {
         goalsOfTheDay?.map((goalOfTheday, index) => (
             <Inline key={index} space='space.100' alignBlock='center' valign='center'>
                 <Inline space='space.100' alignBlock='center'>
-                    <Text><Strong>{index + 1}:{'  '} </Strong>{goalOfTheday}</Text>
+                    <Text><Strong>{index + 1}:&nbsp;&nbsp;</Strong>{goalOfTheday}</Text>
                 </Inline>
             <Button
                 appearance='subtle'
