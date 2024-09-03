@@ -1,34 +1,28 @@
 import React, { useState } from 'react';
-import useSettings from './components/Settings/useSettings';
+import useContent from './components/Content/useContent';
 import ForgeReconciler, {
-  LoadingButton, 
   Button, 
   Icon,
   Inline,
 } from '@forge/react';
-import { Settings } from './components'
+import { Settings, Content } from './components'
 import { invoke } from '@forge/bridge';
 import useIndex from './useIndex';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [settingsOpened, setSettingsOpened] = useState(false);
+  const [contentOpened, setContentOpened] = useState(false);
   const {projectId, projectKey} = useIndex();
   const {
     setSetting, 
-    slackEndpoint, 
-    sprintStatusEnabled, 
-    workProgressEnabled,
     goalsOfTheDay,
     newGoalOfTheDay,
-    setSlackEndpoint,
-    setSprintStatusEnabled,
-    setWorkProgressEnabled,
     removeGoalOfTheDay,
     addNewGoalOfTheDay,
     setNewGoalOfTheDay,
     clearGoalsOfTheDay
-} = useSettings();
+} = useContent();
 
   const summaryGenerationHandler = async () => {
     setIsLoading(true);
@@ -44,23 +38,23 @@ const App = () => {
         <Button onClick={() => setSettingsOpened(true)} appearance='subtle'>
           <Icon glyph='settings' label='Settings' size='large' />
         </Button>
-        <LoadingButton onClick={summaryGenerationHandler} isLoading={isLoading}>Generate Standup Summary</LoadingButton>
+        <Button onClick={() => setContentOpened(true)} isLoading={isLoading}>Generate Standup Summary</Button>
       </Inline>
       <Settings
           isVisible={settingsOpened} 
-          setIsVisible={setSettingsOpened} 
+          setIsVisible={setSettingsOpened}  
+        />
+      <Content           
+          isVisible={contentOpened} 
+          setIsVisible={setContentOpened}
           setSetting={setSetting} 
-          slackEndpoint={slackEndpoint} 
-          sprintStatusEnabled={sprintStatusEnabled}
-          workProgressEnabled={workProgressEnabled}
           goalsOfTheDay={goalsOfTheDay}
           newGoalOfTheDay={newGoalOfTheDay}
-          setSlackEndpoint={setSlackEndpoint}
-          setSprintStatusEnabled={setSprintStatusEnabled}
-          setWorkProgressEnabled={setWorkProgressEnabled}
           removeGoalOfTheDay={removeGoalOfTheDay}
           addNewGoalOfTheDay={addNewGoalOfTheDay}
-          setNewGoalOfTheDay={setNewGoalOfTheDay} 
+          setNewGoalOfTheDay={setNewGoalOfTheDay}
+          handleSubmit={summaryGenerationHandler}
+          isSubmitFunctionLoading={isLoading}
         />
     </>
   );
