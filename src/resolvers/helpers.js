@@ -21,16 +21,16 @@ const issueTypePluralName = (name) => {
 
     return plurals[name];
 }
-
-function getLatestSprintGoal(sprints) {
-    const { goal } = sprints.reduce((latest, current) => {
-      return new Date(current.endDate) > new Date(latest.endDate) ? current : latest;
-    });
-    return goal;
+  function selectLatestAttribute(items, dateField, attribute) {
+    if (items.length === 0) return null; 
+    
+    return items.reduce((latest, current) => 
+      new Date(current[dateField]) > new Date(latest[dateField]) ? current : latest
+    )[attribute];
   }
   
 export {
     countRemainingDays,
     issueTypePluralName,
-    getLatestSprintGoal
+    selectLatestAttribute
 }
