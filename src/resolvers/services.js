@@ -3,10 +3,9 @@ import Issue from './Issue';
 import api, { route, storage } from '@forge/api';
 
 const sendMessage = async (issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId) => {
-    const SLACK_API = await storage.get(`slack-endpoint-${projectId}`);
+    const { slackEndpoint }= await storage.get(`settings-${projectId}`) || {};
     const body = await (new Markdown(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay)).generateBlocks();
-
-    await api.fetch(SLACK_API, {
+    await api.fetch(slackEndpoint, {
         body: JSON.stringify(body),
         method: 'POST',
     });
@@ -20,7 +19,7 @@ const getSubtasksForIssue = async (projectKey, parentKey) => {
 }
 
 const getBoard = async (projectId) => {
-    const response = await (await api.asApp().requestJira(route`/rest/agile/1.0/board`)).json();
+    const response = await (await api.asApp().requestJira(route`/rest/agile/1.0/board?projectKeyOrId=${projectId}`)).json();
     const { values: boards } = response;
     const foundBoard = boards.find(el => el.location.projectId == projectId);
     return foundBoard;

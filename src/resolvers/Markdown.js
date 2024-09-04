@@ -55,14 +55,14 @@ class Markdown {
 
     async generateMarkdown() {
         await this.getJiraInstanceUrl();
-        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n\n`
+        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n`
 
         const goalsOfTheDayList = this.goalsOfTheDay
         ?.map((goal, index) => `  ${index + 1}.  ${goal}`)
         .join('\n\n');
 
         let markdown = [
-            this.latestUnreleasedVersion.length > 0 ? `\n\n\n*Release Version : ${this.latestUnreleasedVersion}*\n\n` : '',
+            this.latestUnreleasedVersion && this.latestUnreleasedVersion.length > 0 ? `\n\n\n*Release Version : ${this.latestUnreleasedVersion}*\n\n` : '',
             this.sprintGoal.length > 0 ? `*Sprint Goal*: \n\n${this.sprintGoal}\n\n` : '',
             remainingDays,
             goalsOfTheDayList.length > 0 ? `\n\n*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n` : ''
@@ -112,7 +112,7 @@ class Markdown {
                             elements: [
                                 {
                                     type: "text",
-                                    text: "\n\n\n\n\n\n"
+                                    text: "\n\n"
                                 }
                             ]
                         },
