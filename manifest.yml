@@ -24,6 +24,7 @@ modules:
         projectKey:
           - VX2
           - IN
+          - REPAUTO
   function:
     - key: resolver
       handler: index.handler
