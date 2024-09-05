@@ -22,8 +22,8 @@ jobs:
         with:
           node-version: 20
       - run: |
-          forge settings set usage-analytics true
           npm install --global @forge/cli
+          forge settings set usage-analytics true
       - run: |
           npm install
           forge deploy -e staging
