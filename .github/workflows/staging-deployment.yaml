@@ -27,4 +27,4 @@ jobs:
       - run: |
           npm install
           forge deploy -e staging
-          forge install -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
+          forge install --upgrade -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
