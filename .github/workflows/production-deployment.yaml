@@ -23,13 +23,14 @@ jobs:
       - run: |
           npm install --global @forge/cli
           forge settings set usage-analytics true
+          npm install --global js-yaml
       - run: |
           cp .github/helpers/remove-display-conditions.js .
           node remove-display-conditions.js
 
           cat manifest.yml
 
-          
+
           # npm install
           # forge deploy -e staging
           # forge install -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
