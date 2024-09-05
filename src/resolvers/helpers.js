@@ -15,9 +15,10 @@ const issueTypePluralName = (name) => {
         'Story': ':jira-story: Stories',
         'Task': ':jira-task: Tasks',
         'Bug': ':jira-bug: Bug Groups',
+        'DEFAULT': ':black_circle_for_record:'
     };
 
-    if(plurals[name] === undefined) return name;
+    if(plurals[name] === undefined) return plurals['DEFAULT'];
 
     return plurals[name];
 }

@@ -5,6 +5,7 @@ class SlackMessageBlock
         'Task': 'jira-task',
         'QOLI': 'jira-qoli',
         'Bug': 'jira-bug',
+        'DEFAULT': 'black_circle_for_record'
     }
 
     static createAssigneeListItem(name) {
@@ -42,7 +43,7 @@ class SlackMessageBlock
                     elements: [
                         {
                             type: "emoji",
-                            name: this.issueIcons[issue.issuetype],
+                            name: this.issueIcons[issue?.issuetype] ?? this.issueIcons['DEFAULT'],
                         },
                         {
                             type: "text",
@@ -50,7 +51,7 @@ class SlackMessageBlock
                         },
                         {
                             type: "link",
-                            url: `${jiraUrl}/browse/${issue.key}`,
+                            url: `${jiraUrl}/browse/${issue?.key}`,
                             text: issue.key,
                         },
                         {
@@ -76,7 +77,7 @@ class SlackMessageBlock
                         elements: [
                             {
                                 type: "emoji",
-                                name: this.issueIcons[story.issuetype],
+                                name: this.issueIcons[story?.issuetype] ?? this.issueIcons['DEFAULT'],
                             },
                             {
                                 type: "text",
@@ -84,8 +85,8 @@ class SlackMessageBlock
                             },
                             {
                                 type: "link",
-                                url: `${jiraUrl}/browse/${story.key}`,
-                                text: story.key,
+                                url: `${jiraUrl}/browse/${story?.key}`,
+                                text: story?.key,
                             }
                         ]
                     }
