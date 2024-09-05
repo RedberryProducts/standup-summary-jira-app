@@ -25,13 +25,8 @@ jobs:
           forge settings set usage-analytics true
       - run: |
           cp .github/helpers/remove-display-conditions.py .
-          python3 remove-display-conditions.py
+          python remove-display-conditions.py
 
-          python --version
-          python3 --version
-          cat manifest.yml
-
-
-          # npm install
-          # forge deploy -e staging
-          # forge install -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
+          npm install
+          forge deploy -e production
+          forge install -e production -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
