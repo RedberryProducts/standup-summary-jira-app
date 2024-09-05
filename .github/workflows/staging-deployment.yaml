@@ -21,7 +21,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install --global @forge/cli
+      - run: |
+          forge settings set usage-analytics true
+          npm install --global @forge/cli
       - run: |
           npm install
           forge deploy -e staging
