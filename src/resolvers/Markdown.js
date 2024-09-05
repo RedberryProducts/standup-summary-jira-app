@@ -69,8 +69,8 @@ class Markdown {
 
         let markdown = [
             this.latestUnreleasedVersion && this.latestUnreleasedVersion.length > 0 ? `\n\n\n*Release Version : ${this.latestUnreleasedVersion}*\n\n` : '',
-            this.sprintGoal.length > 0 ? `*Sprint Goal*: \n\n${this.sprintGoal}\n\n` : '',
             remainingDays,
+            this.sprintGoal.length > 0 ? `*Sprint Goal*: \n\n${this.sprintGoal}\n\n` : '',
             goalsOfTheDayList.length > 0 ? `\n\n*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n` : '',
             this.additionalNotes.length > 0 ? `:memo: *Additional Notes*: \n\n_${this.additionalNotes}_\n\n` : ''
         ].filter(Boolean).join('');    
