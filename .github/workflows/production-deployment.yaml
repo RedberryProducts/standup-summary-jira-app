@@ -21,12 +21,14 @@ jobs:
         with:
           node-version: 20
       - run: |
-          npm install --global @forge/cli js-yaml
+          npm install --global @forge/cli
           forge settings set usage-analytics true
       - run: |
-          cp .github/helpers/remove-display-conditions.js .
-          node remove-display-conditions.js
+          cp .github/helpers/remove-display-conditions.py .
+          python3 remove-display-conditions.py
 
+          python --version
+          python3 --version
           cat manifest.yml
 
 
