@@ -25,6 +25,7 @@ const Content = ({
     isSubmitFunctionLoading,
     defaultDate,
     handleChange,
+    setAdditionalNotes
 }) => {
     return (
         <BaseModal isVisible={isVisible} setIsVisible={setIsVisible} title="Content" submitButtonText='Send To Slack' onClick={handleSubmit} isSubmitFunctionLoading={isSubmitFunctionLoading}>
@@ -56,8 +57,17 @@ const Content = ({
                         Add Goal
                     </Button>
                 </Inline>
-                <Label labelFor="date-picker">Choose date</Label>
-                {defaultDate && <DatePicker onChange={(value) => handleChange(value)}  maxDate={new Date().toISOString().split('T')[0]} defaultValue={defaultDate} id="date-picker" />}
+                <Box paddingBlock="space.200">
+                    <Label labelFor="area">Additional Notes</Label>
+                        <TextArea
+                        id="additional-notes-area"
+                        placeholder="Enter additional notes"
+                        name="additional-notes"
+                        onChange={(e) => setAdditionalNotes(e.target.value)}
+                        />
+                    <Label labelFor="date-picker">Choose date</Label>
+                    {defaultDate && <DatePicker onChange={(value) => handleChange(value)}  maxDate={new Date().toISOString().split('T')[0]} defaultValue={defaultDate} id="date-picker" />}         
+                </Box>
             </Box>
         </BaseModal>        
     );

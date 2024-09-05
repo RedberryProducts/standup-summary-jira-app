@@ -3,8 +3,8 @@ import Issue from './Issue';
 import api, { route, storage } from '@forge/api';
 
 const sendMessage = async (issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId, doneIssues) => {
-    const { slackEndpoint }= await storage.get(`settings-${projectId}`) || {};
-    const body = await (new Markdown(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues)).generateBlocks();
+    const { slackEndpoint, additionalNotes }= await storage.get(`settings-${projectId}`) || {};
+    const body = await (new Markdown(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues, additionalNotes)).generateBlocks();
     await api.fetch(slackEndpoint, {
         body: JSON.stringify(body),
         method: 'POST',
