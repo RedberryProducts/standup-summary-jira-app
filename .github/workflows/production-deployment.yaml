@@ -1,0 +1,35 @@
+name: Production deployment on release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      FORGE_EMAIL: ${{ vars.FORGE_EMAIL }}
+      FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: |
+          npm install --global @forge/cli
+          forge settings set usage-analytics true
+      - run: |
+          cp .github/helpers/remove-display-conditions.js .
+          node remove-display-conditions.js
+
+          cat manifest.yml
+
+          
+          # npm install
+          # forge deploy -e staging
+          # forge install -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
