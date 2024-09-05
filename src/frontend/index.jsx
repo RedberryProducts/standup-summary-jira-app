@@ -21,17 +21,19 @@ const App = () => {
     removeGoalOfTheDay,
     addNewGoalOfTheDay,
     setNewGoalOfTheDay,
-    clearGoalsOfTheDay
+    clearGoalsOfTheDay,
+    defaultDate,
+    handleChange,
 } = useContent();
 
   const summaryGenerationHandler = async () => {
     setIsLoading(true);
     const response = await invoke('generate-summary', { projectId, projectKey });
+    await setSetting({ lastSummaryGenerationDate: new Date() });
     if(response === 'ok') clearGoalsOfTheDay();
     setIsLoading(false);
     console.log(response);
   }
-
   return (
     <>
       <Inline space='space.100'>
@@ -55,6 +57,8 @@ const App = () => {
           setNewGoalOfTheDay={setNewGoalOfTheDay}
           handleSubmit={summaryGenerationHandler}
           isSubmitFunctionLoading={isLoading}
+          defaultDate={defaultDate}
+          handleChange={handleChange}
         />
     </>
   );

@@ -7,6 +7,8 @@ import {
     Box,
     Strong,
     TextArea,
+    DatePicker,
+    Label
 } from '@forge/react';
 import BaseModal from "../BaseModal/BaseModal";
 import GoalsOfTheDayList from "../GoalsOfTheDayList/GoalsOfTheDayList";
@@ -20,7 +22,9 @@ const Content = ({
     addNewGoalOfTheDay,
     setNewGoalOfTheDay,
     handleSubmit,
-    isSubmitFunctionLoading
+    isSubmitFunctionLoading,
+    defaultDate,
+    handleChange,
 }) => {
     return (
         <BaseModal isVisible={isVisible} setIsVisible={setIsVisible} title="Content" submitButtonText='Send To Slack' onClick={handleSubmit} isSubmitFunctionLoading={isSubmitFunctionLoading}>
@@ -52,6 +56,8 @@ const Content = ({
                         Add Goal
                     </Button>
                 </Inline>
+                <Label labelFor="date-picker">Choose date</Label>
+                {defaultDate && <DatePicker onChange={(value) => handleChange(value)}  maxDate={new Date().toISOString().split('T')[0]} defaultValue={defaultDate} id="date-picker" />}
             </Box>
         </BaseModal>        
     );

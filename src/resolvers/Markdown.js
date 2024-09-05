@@ -13,6 +13,7 @@ class Markdown {
     goalsOfTheDay = [];
     storiesByIssueType = [];
     bugGroups = [];
+    doneBugGroups = [];
     assignees = [];
 
     storyStatusIcons = {
@@ -28,10 +29,13 @@ class Markdown {
      * @param {Number} remainingDays 
      * @param {String[]} goalsOfTheDay 
      */
-    constructor(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay) {
+    constructor(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues) {
         this.issues = issues;
-        this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
+        this.doneIssues = doneIssues;
+        this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype')
+        this.doneIssuesByIssueType = collect(doneIssues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
         this.bugGroups = collect(issues).filter(el => el.issuetype === 'Bug');
+        this.doneBugGroups = collect(doneIssues).filter(el => el.issuetype === 'Bug');
         this.latestUnreleasedVersion = latestUnreleasedVersion;
         this.sprintGoal = sprintGoal;
         this.remainingDays = remainingDays;
@@ -73,28 +77,11 @@ class Markdown {
 
     async generateBlocks() {
         const markdown = await this.generateMarkdown();
-        const workToBeDone = this.generateWorkToBeDoneData();
+        const workToBeDone = this.generateWorkData(this.issues);
+        const doneWork = this.generateWorkData(this.doneIssues)
         const jiraUrl = await this.getJiraInstanceUrl();
-
-        const elements = workToBeDone
-            .map((el, name) => {
-                const storiesWithSubtasks = el
-                    .filter((el, idx) => idx !== 'standaloneIssues')
-                    .map((el, storyKey) => {
-                        const [story] = this.issues.filter(el => el.key === storyKey);
-                        return SlackMessageBlock.createSubtasksWithStory(el,story, jiraUrl);
-                })
-                .flatten(1)
-                .toArray();
-                
-                return [
-                    SlackMessageBlock.createAssigneeListItem(name),
-                    ...el.get('standaloneIssues').map(el => SlackMessageBlock.createStandaloneListItem(el, jiraUrl)),
-                    ...storiesWithSubtasks,
-                    SlackMessageBlock.createEmptyLines(),
-                ]
-            }).toArray().flat();
-        
+        const workToBeDoneElements = this.generateElements(jiraUrl, workToBeDone, this.issues)
+        const doneWorkElements = this.generateElements(jiraUrl, doneWork, this.doneIssues)
         return {
             blocks: [
                 {
@@ -128,7 +115,20 @@ class Markdown {
                                 }
                             ]
                         },
-                        ...elements,
+                        ...workToBeDoneElements,
+                        {
+                            type: "rich_text_section",
+                            elements: [
+                                {
+                                    type: "text",
+                                    style: {
+                                        bold: true,
+                                    },
+                                    text: doneWorkElements.length > 0 ? "\n\nDones:\n\n" : "\n"
+                                }
+                            ]
+                        },
+                        ...doneWorkElements
                     ]
                 },
             ]
@@ -153,10 +153,10 @@ class Markdown {
         }, `*${issueTypePluralName(name)}*:`);
     }
 
-    generateWorkToBeDoneData() {
-        const assignedIssuesWithoutSubtasks = collect(this.issues).filter(el => el.subtasks.length === 0 && el.assignee);
+    generateWorkData(issues) {
+        const assignedIssuesWithoutSubtasks = collect(issues).filter(el => el.subtasks.length === 0 && el.assignee);
         
-        const subtasksWithAssignee = collect(this.issues)
+        const subtasksWithAssignee = collect(issues)
             .map(el => el.subtasks)
             .flatten(1)
             .filter(el => el.assignee);
@@ -176,6 +176,27 @@ class Markdown {
         });
 
         return finalData;
+    }
+
+    generateElements(jiraUrl, issues, ourIssues) {
+        return issues
+        .map((el, name) => {
+            const storiesWithSubtasks = el
+                .filter((el, idx) => idx !== 'standaloneIssues')
+                .map((el, storyKey) => {
+                    const [story] = ourIssues.filter(el => el.key === storyKey);
+                    return SlackMessageBlock.createSubtasksWithStory(el,story, jiraUrl);
+            })
+            .flatten(1)
+            .toArray();
+            
+            return [
+                SlackMessageBlock.createAssigneeListItem(name),
+                ...el.get('standaloneIssues').map(el => SlackMessageBlock.createStandaloneListItem(el, jiraUrl)),
+                ...storiesWithSubtasks,
+                SlackMessageBlock.createEmptyLines(),
+            ]
+        }).toArray().flat();
     }
 }
 

@@ -5,6 +5,7 @@ import useIndex from '../../useIndex'
 const useContent = () => {
     const [goalsOfTheDay, setGoalsOfTheDay] = useState([]);
     const [newGoalOfTheDay, setNewGoalOfTheDay] = useState("");
+    const [defaultDate, setDefaultDate] = useState('')
 
     const {projectId} = useIndex();
 
@@ -13,6 +14,7 @@ const useContent = () => {
             (async () => {
                 const data = await invoke('get-settings', { projectId });
                 setGoalsOfTheDay(data.goalsOfTheDay ?? [])
+                setDefaultDate(data?.lastSummaryGenerationDate ?? new Date())
             })();
         }
     }, [projectId]);
@@ -42,7 +44,19 @@ const useContent = () => {
         setGoalsOfTheDay([])
         setNewGoalOfTheDay('')   
     }
-
+    const handleChange = (value) => {
+        const inputDate = new Date(value);
+        const defaultDateObj = new Date(defaultDate);
+    
+        inputDate.setHours(0, 0, 0, 0);
+        defaultDateObj.setHours(0, 0, 0, 0);
+    
+        const isSameDate = inputDate.getTime() === defaultDateObj.getTime();
+    
+        const formattedDate = inputDate.toISOString();
+        setSetting({lastSummaryGenerationDate: isSameDate ? defaultDate : formattedDate})
+    };
+    
     return {
         goalsOfTheDay,
         newGoalOfTheDay,
@@ -51,7 +65,9 @@ const useContent = () => {
         setSetting,
         removeGoalOfTheDay,
         addNewGoalOfTheDay,
-        clearGoalsOfTheDay
+        clearGoalsOfTheDay,
+        defaultDate,
+        handleChange,
     };
 }
 

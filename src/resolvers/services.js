@@ -2,9 +2,9 @@ import Markdown from './Markdown';
 import Issue from './Issue';
 import api, { route, storage } from '@forge/api';
 
-const sendMessage = async (issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId) => {
+const sendMessage = async (issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId, doneIssues) => {
     const { slackEndpoint }= await storage.get(`settings-${projectId}`) || {};
-    const body = await (new Markdown(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay)).generateBlocks();
+    const body = await (new Markdown(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues)).generateBlocks();
     await api.fetch(slackEndpoint, {
         body: JSON.stringify(body),
         method: 'POST',
@@ -30,14 +30,14 @@ const getActiveSprints = async (boardId) => {
     return sprints.filter(el => el.state === 'active');
 }
 
-const getIssuesForSprints = async (sprints, projectKey) => {
+const getIssuesForSprints = async (sprints, projectKey, isDone) => {
     const issuesForSprints = await Promise.all(sprints.map(async (el) => {
         return (await api.asApp().requestJira(route`/rest/agile/1.0/sprint/${el.id}/issue?expand=assignee`)).json();
     }));
 
     const extractedIssues = issuesForSprints.map(el => el.issues).flat();
-    const transformedIssues = extractedIssues.map(el => new Issue(el, projectKey));
-    return transformedIssues;
+    if(isDone) return extractedIssues.map(el => new Issue(el, projectKey));
+    return extractedIssues.map(el => new Issue(el, projectKey)).filter(el => el.statusCategory !== 'Done');;
 }
 
 const getBoardUnreleasedVersions = async (boardId) => {

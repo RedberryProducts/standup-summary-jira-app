@@ -15,9 +15,10 @@ const issueTypePluralName = (name) => {
         'Story': ':jira-story: Stories',
         'Task': ':jira-task: Tasks',
         'Bug': ':jira-bug: Bug Groups',
+        'DEFAULT': ':black_circle_for_record:'
     };
 
-    if(plurals[name] === undefined) return name;
+    if(plurals[name] === undefined) return plurals['DEFAULT'];
 
     return plurals[name];
 }
@@ -28,9 +29,25 @@ const issueTypePluralName = (name) => {
       new Date(current[dateField]) > new Date(latest[dateField]) ? current : latest
     )[attribute];
   }
+
+  function filterDoneIssues(everyIssue, lastSummaryGenerationDate) {
+    const lastGeneration = new Date(lastSummaryGenerationDate);
+    const today = new Date();
+  
+    return everyIssue.filter((el) => {
+      const statusChangeDate = new Date(el.statusCategoryChangeDate);
+      return (
+        (el.statusCategory === 'Done' &&
+        statusChangeDate >= lastGeneration &&
+        statusChangeDate <= today) ||
+        el.subtasks.length > 0
+      );
+    });
+  }
   
 export {
     countRemainingDays,
     issueTypePluralName,
-    selectLatestAttribute
+    selectLatestAttribute,
+    filterDoneIssues
 }
