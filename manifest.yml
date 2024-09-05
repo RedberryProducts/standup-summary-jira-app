@@ -1,35 +1,39 @@
-app:
-  id: ari:cloud:ecosystem::app/a211556a-4091-4c58-b90f-fbe587e645ea
-  runtime:
-    name: nodejs18.x
-modules:
-  function:
-  - handler: index.handler
-    key: resolver
-  jira:projectPage:
-  - displayConditions: null
-    icon: resource:assets;standup-summary.ico
-    key: standup-summary-hello-world-project-page
-    render: native
-    resolver:
-      function: resolver
-    resource: main
-    title: Standup Summary
 permissions:
+  scopes:
+    - read:board-scope:jira-software
+    - read:sprint:jira-software
+    - read:issue-details:jira
+    - read:project:jira
+    - read:jira-work
+    - read:jql:jira
+    - storage:app
   external:
     fetch:
       backend:
-      - https://hooks.slack.com
-  scopes:
-  - read:board-scope:jira-software
-  - read:sprint:jira-software
-  - read:issue-details:jira
-  - read:project:jira
-  - read:jira-work
-  - read:jql:jira
-  - storage:app
+        - https://hooks.slack.com
+modules:
+  'jira:projectPage':
+    - key: standup-summary-hello-world-project-page
+      resource: main
+      icon: resource:assets;standup-summary.ico
+      resolver:
+        function: resolver
+      render: native
+      title: 'Standup Summary'
+      displayConditions:
+        projectKey:
+          - VX2
+          - IN
+          - REPAUTO
+  function:
+    - key: resolver
+      handler: index.handler
 resources:
-- key: main
-  path: src/frontend/index.jsx
-- key: assets
-  path: src/assets
+  - key: main
+    path: src/frontend/index.jsx
+  - key: assets
+    path: src/assets
+app:
+  runtime:
+    name: nodejs18.x
+  id: ari:cloud:ecosystem::app/a211556a-4091-4c58-b90f-fbe587e645ea
