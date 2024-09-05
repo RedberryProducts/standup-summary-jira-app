@@ -29,4 +29,4 @@ jobs:
 
           npm install
           forge deploy -e production
-          forge install -e production -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
+          forge install --upgrade -e production -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
