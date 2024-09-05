@@ -24,9 +24,12 @@ const App = () => {
     clearGoalsOfTheDay,
     defaultDate,
     handleChange,
+    setAdditionalNotes,
+    insertAdditionalNotes
 } = useContent();
 
   const summaryGenerationHandler = async () => {
+    insertAdditionalNotes();
     setIsLoading(true);
     const response = await invoke('generate-summary', { projectId, projectKey });
     await setSetting({ lastSummaryGenerationDate: new Date() });
@@ -59,6 +62,7 @@ const App = () => {
           isSubmitFunctionLoading={isLoading}
           defaultDate={defaultDate}
           handleChange={handleChange}
+          setAdditionalNotes={setAdditionalNotes}
         />
     </>
   );

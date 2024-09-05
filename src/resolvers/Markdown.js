@@ -8,6 +8,7 @@ class Markdown {
     jiraUrl = '';
     issues = [];
     latestUnreleasedVersion = '';
+    additionalNotes = '';
     sprintGoal = '';
     remainingDays = 0;
     goalsOfTheDay = [];
@@ -29,7 +30,7 @@ class Markdown {
      * @param {Number} remainingDays 
      * @param {String[]} goalsOfTheDay 
      */
-    constructor(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues) {
+    constructor(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues, additionalNotes) {
         this.issues = issues;
         this.doneIssues = doneIssues;
         this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype')
@@ -40,6 +41,7 @@ class Markdown {
         this.sprintGoal = sprintGoal;
         this.remainingDays = remainingDays;
         this.goalsOfTheDay = goalsOfTheDay;
+        this.additionalNotes = additionalNotes;
         
     }
 
@@ -69,7 +71,8 @@ class Markdown {
             this.latestUnreleasedVersion && this.latestUnreleasedVersion.length > 0 ? `\n\n\n*Release Version : ${this.latestUnreleasedVersion}*\n\n` : '',
             this.sprintGoal.length > 0 ? `*Sprint Goal*: \n\n${this.sprintGoal}\n\n` : '',
             remainingDays,
-            goalsOfTheDayList.length > 0 ? `\n\n*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n` : ''
+            goalsOfTheDayList.length > 0 ? `\n\n*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n` : '',
+            this.additionalNotes.length > 0 ? `:memo: *Additional Notes*: \n\n_${this.additionalNotes}_\n\n` : ''
         ].filter(Boolean).join('');    
        
         return markdown;

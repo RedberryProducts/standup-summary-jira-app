@@ -6,6 +6,7 @@ const useContent = () => {
     const [goalsOfTheDay, setGoalsOfTheDay] = useState([]);
     const [newGoalOfTheDay, setNewGoalOfTheDay] = useState("");
     const [defaultDate, setDefaultDate] = useState('')
+    const [additionalNotes, setAdditionalNotes] = useState('');
 
     const {projectId} = useIndex();
 
@@ -56,7 +57,11 @@ const useContent = () => {
         const formattedDate = inputDate.toISOString();
         setSetting({lastSummaryGenerationDate: isSameDate ? defaultDate : formattedDate})
     };
-    
+     
+    const insertAdditionalNotes = () => {
+        setSetting({ additionalNotes: additionalNotes })
+    }
+
     return {
         goalsOfTheDay,
         newGoalOfTheDay,
@@ -68,6 +73,8 @@ const useContent = () => {
         clearGoalsOfTheDay,
         defaultDate,
         handleChange,
+        setAdditionalNotes,
+        insertAdditionalNotes
     };
 }
 
