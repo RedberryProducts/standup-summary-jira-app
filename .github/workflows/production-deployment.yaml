@@ -21,9 +21,8 @@ jobs:
         with:
           node-version: 20
       - run: |
-          npm install --global @forge/cli
+          npm install --global @forge/cli js-yaml
           forge settings set usage-analytics true
-          npm install --global js-yaml
       - run: |
           cp .github/helpers/remove-display-conditions.js .
           node remove-display-conditions.js
