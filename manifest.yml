@@ -12,7 +12,7 @@ permissions:
       backend:
         - https://hooks.slack.com
 modules:
-  'jira:projectPage':
+  jira:projectPage:
     - key: standup-summary-hello-world-project-page
       resource: main
       icon: resource:assets;standup-summary.ico
