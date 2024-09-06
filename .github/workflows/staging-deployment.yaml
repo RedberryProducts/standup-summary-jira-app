@@ -28,6 +28,8 @@ jobs:
           cat manifest.yml
           cp .github/helpers/remove-display-conditions.py .
           python remove-display-conditions.py
+          echo "----------------"
+          cat manifest.yml
           
           # npm install
           # forge deploy -e staging
