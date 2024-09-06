@@ -17,14 +17,18 @@ jobs:
       FORGE_EMAIL: ${{ vars.FORGE_EMAIL }}
       FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      # - uses: actions/checkout@v4
+      # - uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 20
+      # - run: |
+      #     npm install --global @forge/cli
+      #     forge settings set usage-analytics true
       - run: |
-          npm install --global @forge/cli
-          forge settings set usage-analytics true
-      - run: |
-          npm install
-          forge deploy -e staging
-          forge install --upgrade -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
+          cat manifest.yml
+          cp .github/helpers/remove-display-conditions.py .
+          python remove-display-conditions.py
+          
+          # npm install
+          # forge deploy -e staging
+          # forge install --upgrade -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
