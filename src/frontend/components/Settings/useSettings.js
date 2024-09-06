@@ -5,14 +5,17 @@ import useIndex from '../../useIndex'
 const useSettings = () => {
     const [slackEndpoint, setSlackEndpoint] = useState('');
     const {projectId} = useIndex();
-
+    const [isSlackEnpointLoading, setIsSlackEndpointLoading] = useState(true)
     useEffect(() => {
-        if(projectId) {
-            (async () => {
+        const fetchSettings = async () => {
+            if (projectId) {
+                setIsSlackEndpointLoading(true);
                 const data = await invoke('get-settings', { projectId });
                 setSlackEndpoint(data.slackEndpoint || '');
-            })();
-        }
+                setIsSlackEndpointLoading(false);
+            }
+        };
+        fetchSettings();
     }, [projectId]);
     
     const setSetting = async (settings) => {
@@ -23,6 +26,7 @@ const useSettings = () => {
         slackEndpoint,
         setSlackEndpoint,
         setSetting,
+        isSlackEnpointLoading
     };
 }
 
