@@ -24,9 +24,11 @@ const BaseModal = ({
         isVisible && (
             <ModalTransition>
                 <Modal>
-                    <ModalHeader>
-                        <ModalTitle>{title}</ModalTitle>
-                    </ModalHeader>
+                    {title && 
+                        <ModalHeader>
+                            <ModalTitle>{title}</ModalTitle>
+                        </ModalHeader>
+                    }
                     <ModalBody>
                         {children}
                     </ModalBody>

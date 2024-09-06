@@ -6,13 +6,11 @@ import useSettings from "./useSettings";
 
 const Settings = ({ 
     isVisible, 
-    setIsVisible,     
+    setIsVisible,    
+    slackEndpoint,
+    setSlackEndpoint,
+    setSetting 
 }) => {
-    const {
-        slackEndpoint,
-        setSlackEndpoint,
-        setSetting
-    } = useSettings();
 
     return (
         <BaseModal 
