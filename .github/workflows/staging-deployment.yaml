@@ -30,7 +30,7 @@ jobs:
           python remove-display-conditions.py
           echo "----------------"
           cat manifest.yml
-          
-          # npm install
-          # forge deploy -e staging
-          # forge install --upgrade -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
+
+          npm install
+          forge deploy -e staging
+          forge install --upgrade -e staging -s https://rayredberry.atlassian.net/ --product jira  --non-interactive
