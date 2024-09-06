@@ -15,7 +15,7 @@ const useContent = () => {
             (async () => {
                 const data = await invoke('get-settings', { projectId });
                 setGoalsOfTheDay(data.goalsOfTheDay ?? [])
-                setDefaultDate(data?.lastSummaryGenerationDate ?? new Date())
+                setDefaultDate(data?.lastSummaryGenerationDate ?? new Date().toISOString().split('T')[0])
             })();
         }
     }, [projectId]);
