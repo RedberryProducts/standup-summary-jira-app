@@ -18,12 +18,12 @@ jobs:
       FORGE_API_TOKEN: ${{ secrets.FORGE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      # - uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
-      # - run: |
-      #     npm install --global @forge/cli
-      #     forge settings set usage-analytics true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: |
+          npm install --global @forge/cli
+          forge settings set usage-analytics true
       - run: |
           cat manifest.yml
           cp .github/helpers/remove-display-conditions.py .
