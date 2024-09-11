@@ -29,7 +29,7 @@ class Issue {
         this.projectKey = projectKey;
     }
 
-    async fetchSubtasks(areDone = false, lastGenerationDate) {
+    async fetchSubtasks(areDone = false, lastGenerationDate, selectedStatuses) {
         if (this.issuetype === 'Subtask') return;
         
         const subtasks = await getSubtasksForIssue(this.projectKey, this.key);
@@ -44,7 +44,7 @@ class Issue {
             });
         } else {
             this.subtasks = subtasks.map(el => new Issue(el)).filter(el => {
-                return el.statusCategory !== 'Done'
+                return el.statusCategory !== 'Done' && selectedStatuses.includes(el.status)
             });
         }
     }
