@@ -1,5 +1,5 @@
 import Resolver from '@forge/resolver';
-import { sendMessage, getBoard, getActiveSprints, getIssuesForSprints, getBoardUnreleasedVersions } from './services';
+import { sendMessage, getBoard, getActiveSprints, getIssuesForSprints, getBoardUnreleasedVersions, getBoardStatus } from './services';
 import { storage } from '@forge/api';
 import { countRemainingDays, selectLatestAttribute, filterDoneIssues} from './helpers';
 
@@ -21,6 +21,12 @@ resolver.define('generate-summary', async (req) => {
   const latestUnreleasedVersion = selectLatestAttribute(boardUnreleasedVersions.map(({ name, releaseDate }) => ({ name, releaseDate })), 'releaseDate', 'name')
   await sendMessage(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId, doneIssues);
   return 'ok';
+});
+
+resolver.define('get-status-names', async (req) => {
+  const { projectId } = req.payload;
+  const foundBoard = await getBoard(projectId);
+  return await getBoardStatus(foundBoard.id);
 });
 
 resolver.define('get-settings', async (req) => {

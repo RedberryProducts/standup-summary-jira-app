@@ -8,7 +8,8 @@ import {
     Strong,
     TextArea,
     DatePicker,
-    Label
+    Label,
+    Select
 } from '@forge/react';
 import BaseModal from "../BaseModal/BaseModal";
 import GoalsOfTheDayList from "../GoalsOfTheDayList/GoalsOfTheDayList";
@@ -25,11 +26,37 @@ const Content = ({
     isSubmitFunctionLoading,
     defaultDate,
     handleChange,
-    setAdditionalNotes
+    handleSelectChange,
+    setAdditionalNotes,
+    statuses
 }) => {
     return (
-        <BaseModal isVisible={isVisible} setIsVisible={setIsVisible} title="Content" submitButtonText='Send To Slack' onClick={handleSubmit} isSubmitFunctionLoading={isSubmitFunctionLoading}>
+        <BaseModal 
+            isVisible={isVisible} 
+            setIsVisible={setIsVisible} 
+            title="Content" 
+            submitButtonText='Send To Slack' 
+            onClick={handleSubmit} 
+            isSubmitFunctionLoading={isSubmitFunctionLoading}
+        >
             <Box paddingBlock="space.200">
+                <Box paddingBlock="space.200">
+                    {statuses.length > 0 && (
+                        <>
+                            <Label labelFor="multi-select-example">
+                                Select statuses to include in summary
+                            </Label>
+                            <Select
+                                inputId="multi-select-example"
+                                options={statuses}
+                                isMulti
+                                isSearchable={false}
+                                placeholder="Choose a status"
+                                onChange={(value) => handleSelectChange(value)}
+                            />
+                        </>
+                    )}
+                </Box>
                 <Inline alignBlock="center">
                     <Text>Goals of the Day:</Text>
                 </Inline>
@@ -59,14 +86,21 @@ const Content = ({
                 </Inline>
                 <Box paddingBlock="space.200">
                     <Label labelFor="area">Additional Notes</Label>
-                        <TextArea
+                    <TextArea
                         id="additional-notes-area"
                         placeholder="Enter additional notes"
                         name="additional-notes"
                         onChange={(e) => setAdditionalNotes(e.target.value)}
-                        />
+                    />
                     <Label labelFor="date-picker">Choose date</Label>
-                    {defaultDate && <DatePicker onChange={(value) => handleChange(value)}  maxDate={new Date().toISOString().split('T')[0]} defaultValue={defaultDate} id="date-picker" />}         
+                    {defaultDate && (
+                        <DatePicker 
+                            onChange={(value) => handleChange(value)}  
+                            maxDate={new Date().toISOString().split('T')[0]} 
+                            defaultValue={defaultDate} 
+                            id="date-picker" 
+                        />
+                    )}
                 </Box>
             </Box>
         </BaseModal>        
