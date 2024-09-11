@@ -61,7 +61,7 @@ class Markdown {
 
     async generateMarkdown() {
         await this.getJiraInstanceUrl();
-        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n`
+        const remainingDays = `*Remaining Days*: ${this.remainingDays}\n\n\n`
 
         const goalsOfTheDayList = this.goalsOfTheDay
         ?.map((goal, index) => `  ${index + 1}.  ${goal}`)
