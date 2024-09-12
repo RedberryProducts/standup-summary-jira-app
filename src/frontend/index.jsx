@@ -27,8 +27,10 @@ const App = () => {
     clearGoalsOfTheDay,
     defaultDate,
     handleChange,
+    handleSelectChange,
     setAdditionalNotes,
-    insertAdditionalNotes
+    insertAdditionalNotes,
+    statuses
 } = useContent();
 
   const {
@@ -92,7 +94,9 @@ const App = () => {
           isSubmitFunctionLoading={isLoading}
           defaultDate={defaultDate}
           handleChange={handleChange}
+          handleSelectChange={handleSelectChange}
           setAdditionalNotes={setAdditionalNotes}
+          statuses={statuses}
         />
     </>
   );

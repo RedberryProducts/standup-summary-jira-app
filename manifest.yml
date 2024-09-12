@@ -1,5 +1,6 @@
 permissions:
   scopes:
+    - read:board-scope.admin:jira-software
     - read:board-scope:jira-software
     - read:sprint:jira-software
     - read:issue-details:jira

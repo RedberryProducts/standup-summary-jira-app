@@ -45,11 +45,23 @@ const getBoardUnreleasedVersions = async (boardId) => {
     return versions;
 }
 
+
+const getBoardStatus = async (boardId) => {
+    const { columnConfig } = await (await api.asApp().requestJira(route`rest/agile/1.0/board/${boardId}/configuration`)).json();    
+    return columnConfig.columns.map((el) => {
+        return {
+          label: el.name,
+          value: el.name,
+        };
+      });
+}
+
 export {
     getBoard,
     sendMessage,
     getActiveSprints,
     getIssuesForSprints,
     getSubtasksForIssue,
-    getBoardUnreleasedVersions
+    getBoardUnreleasedVersions,
+    getBoardStatus
 }

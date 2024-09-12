@@ -44,10 +44,20 @@ const issueTypePluralName = (name) => {
       );
     });
   }
+
+  function filterToBeDoneIssues(everyIssue, selectedStatuses) {
+    return everyIssue.filter((el) => {
+      return (
+        ((el.statusCategory !== 'Done') &&
+        (el.subtasks.length > 0 || selectedStatuses.includes(el.status))
+      ));
+    });
+  }
   
 export {
     countRemainingDays,
     issueTypePluralName,
     selectLatestAttribute,
-    filterDoneIssues
+    filterDoneIssues,
+    filterToBeDoneIssues
 }
