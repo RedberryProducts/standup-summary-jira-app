@@ -6,7 +6,7 @@ import { DEFAULT_STATUSSES } from "../../utils";
 const useSettings = () => {
   const [slackEndpoint, setSlackEndpoint] = useState("");
   const { projectId } = useIndex();
-  const [isSlackEnpointLoading, setIsSlackEndpointLoading] = useState(true);
+  const [isSettingsDataLoading, setIsSettingsDataLoading] = useState(true);
   const [statuses, setStatuses] = useState([]);
   const [selectedStatuses, setSelectedStatuses] = useState([]);
 
@@ -15,7 +15,7 @@ const useSettings = () => {
       if (projectId) {
         const statuses = await invoke("get-status-names", { projectId });
         setStatuses(statuses);
-        setIsSlackEndpointLoading(true);
+        setIsSettingsDataLoading(true);
         const data = await invoke("get-settings", { projectId });
         setSlackEndpoint(data.slackEndpoint || "");
         setSelectedStatuses(data.selectedStatuses || []);
@@ -37,7 +37,7 @@ const useSettings = () => {
             }
           });
         }
-        setIsSlackEndpointLoading(false);
+        setIsSettingsDataLoading(false);
       }
     };
     fetchSettings();
@@ -56,7 +56,7 @@ const useSettings = () => {
     slackEndpoint,
     setSlackEndpoint,
     setSetting,
-    isSlackEnpointLoading,
+    isSettingsDataLoading,
     statuses,
     handleSelectChange,
     selectedStatuses,

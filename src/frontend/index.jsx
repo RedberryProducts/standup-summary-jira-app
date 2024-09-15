@@ -35,7 +35,7 @@ const App = () => {
     slackEndpoint,
     setSlackEndpoint,
     setSetting: _setSetting,
-    isSlackEnpointLoading,
+    isSettingsDataLoading,
     statuses,
     handleSelectChange,
     selectedStatuses
@@ -61,15 +61,21 @@ const App = () => {
   return (
     <>
       <Inline space='space.100'>
-        <Button onClick={() => setSettingsOpened(true)} appearance='subtle'>
-          <Icon glyph='settings' label='Settings' size='large' />
-        </Button>
-        {isSlackEnpointLoading ?  
-          <Spinner size="medium" label="loading" /> : 
-          <Button onClick={handleSummaryGenerationButtonClick} isLoading={isLoading}>
-            Generate Standup Summary
-          </Button>
-        }
+        {isSettingsDataLoading ? (
+          <Spinner size="medium" label="loading" />
+        ) : (
+          <>
+            <Button onClick={() => setSettingsOpened(true)} appearance="subtle">
+              <Icon glyph="settings" label="Settings" size="large" />
+            </Button>
+            <Button
+              onClick={handleSummaryGenerationButtonClick}
+              isLoading={isLoading}
+            >
+              Generate Standup Summary
+            </Button>
+          </>
+        )}
       </Inline>
       <NoSlackEndpointFound
           isVisible={noSlackEnpointModalOpened} 
