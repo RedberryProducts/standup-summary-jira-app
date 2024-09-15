@@ -18,12 +18,13 @@ const BaseModal = ({
     submitButtonText,
     onClick,
     isSubmitFunctionLoading,
+    sx,
     children
 }) => {
     return (
         isVisible && (
             <ModalTransition>
-                <Modal>
+                <Modal {...sx}>
                     {title && 
                         <ModalHeader>
                             <ModalTitle>{title}</ModalTitle>

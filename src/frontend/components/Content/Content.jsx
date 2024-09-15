@@ -9,7 +9,6 @@ import {
     TextArea,
     DatePicker,
     Label,
-    Select
 } from '@forge/react';
 import BaseModal from "../BaseModal/BaseModal";
 import GoalsOfTheDayList from "../GoalsOfTheDayList/GoalsOfTheDayList";
@@ -26,9 +25,7 @@ const Content = ({
     isSubmitFunctionLoading,
     defaultDate,
     handleChange,
-    handleSelectChange,
     setAdditionalNotes,
-    statuses
 }) => {
     return (
         <BaseModal 
@@ -40,23 +37,6 @@ const Content = ({
             isSubmitFunctionLoading={isSubmitFunctionLoading}
         >
             <Box paddingBlock="space.200">
-                <Box paddingBlock="space.200">
-                    {statuses.length > 0 && (
-                        <>
-                            <Label labelFor="multi-select-example">
-                                Select statuses to include in summary
-                            </Label>
-                            <Select
-                                inputId="multi-select-example"
-                                options={statuses}
-                                isMulti
-                                isSearchable={false}
-                                placeholder="Choose a status"
-                                onChange={(value) => handleSelectChange(value)}
-                            />
-                        </>
-                    )}
-                </Box>
                 <Inline alignBlock="center">
                     <Text>Goals of the Day:</Text>
                 </Inline>

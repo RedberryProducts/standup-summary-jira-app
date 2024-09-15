@@ -27,17 +27,18 @@ const App = () => {
     clearGoalsOfTheDay,
     defaultDate,
     handleChange,
-    handleSelectChange,
     setAdditionalNotes,
     insertAdditionalNotes,
-    statuses
 } = useContent();
 
   const {
     slackEndpoint,
     setSlackEndpoint,
     setSetting: _setSetting,
-    isSlackEnpointLoading
+    isSlackEnpointLoading,
+    statuses,
+    handleSelectChange,
+    selectedStatuses
   } = useSettings();
 
   const summaryGenerationHandler = async () => {
@@ -76,10 +77,13 @@ const App = () => {
         />
       <Settings
           isVisible={settingsOpened} 
-          setIsVisible={setSettingsOpened}  
           slackEndpoint={slackEndpoint}
+          statuses={statuses}
           setSlackEndpoint={setSlackEndpoint}
           setSetting={_setSetting}
+          setIsVisible={setSettingsOpened}  
+          handleSelectChange={handleSelectChange}
+          selectedStatuses={selectedStatuses}
         />
       <Content           
           isVisible={contentOpened} 
@@ -94,9 +98,7 @@ const App = () => {
           isSubmitFunctionLoading={isLoading}
           defaultDate={defaultDate}
           handleChange={handleChange}
-          handleSelectChange={handleSelectChange}
           setAdditionalNotes={setAdditionalNotes}
-          statuses={statuses}
         />
     </>
   );

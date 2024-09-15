@@ -7,15 +7,12 @@ const useContent = () => {
     const [newGoalOfTheDay, setNewGoalOfTheDay] = useState("");
     const [defaultDate, setDefaultDate] = useState('')
     const [additionalNotes, setAdditionalNotes] = useState('');
-    const [statuses, setStatuses] = useState([])
 
     const {projectId} = useIndex();
 
     useEffect(() => {
         if(projectId) {
             (async () => {
-                const statuses = await invoke('get-status-names', { projectId })
-                setStatuses(statuses);
                 const data = await invoke('get-settings', { projectId });
                 setGoalsOfTheDay(data.goalsOfTheDay ?? [])
                 setDefaultDate(data?.lastSummaryGenerationDate ?? new Date().toISOString().split('T')[0])
@@ -61,9 +58,6 @@ const useContent = () => {
         setSetting({lastSummaryGenerationDate: isSameDate ? defaultDate : formattedDate})
     };
 
-    const handleSelectChange = (selectedStatuses) => {
-        setSetting({ selectedStatuses: selectedStatuses.map(el => el.value) })
-    };
      
     const insertAdditionalNotes = () => {
         setSetting({ additionalNotes: additionalNotes })
@@ -80,10 +74,8 @@ const useContent = () => {
         clearGoalsOfTheDay,
         defaultDate,
         handleChange,
-        handleSelectChange,
         setAdditionalNotes,
         insertAdditionalNotes,
-        statuses
     };
 }
 
