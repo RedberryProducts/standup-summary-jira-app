@@ -40,10 +40,20 @@ const useContent = () => {
        
     };
 
-    const clearGoalsOfTheDay = () => {
-        setSetting({ goalsOfTheDay: [] });
-        setGoalsOfTheDay([])
-        setNewGoalOfTheDay('')   
+    const clearGoalsOfTheDay = async () => {
+        await setSetting({ goalsOfTheDay: [] });
+        setGoalsOfTheDay([]);
+        setNewGoalOfTheDay('');
+    }
+    
+    const clearAdditionalNotes = async () => {
+        await setSetting({ additionalNotes: '' });
+        setAdditionalNotes('');
+    }
+    
+    const clearContentOnSubmit = async () => {
+        await clearGoalsOfTheDay();
+        await clearAdditionalNotes();
     }
     const handleChange = (value) => {
         const inputDate = new Date(value);
@@ -71,7 +81,7 @@ const useContent = () => {
         setSetting,
         removeGoalOfTheDay,
         addNewGoalOfTheDay,
-        clearGoalsOfTheDay,
+        clearContentOnSubmit,
         defaultDate,
         handleChange,
         setAdditionalNotes,

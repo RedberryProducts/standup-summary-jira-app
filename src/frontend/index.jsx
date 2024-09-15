@@ -24,7 +24,7 @@ const App = () => {
     removeGoalOfTheDay,
     addNewGoalOfTheDay,
     setNewGoalOfTheDay,
-    clearGoalsOfTheDay,
+    clearContentOnSubmit,
     defaultDate,
     handleChange,
     setAdditionalNotes,
@@ -46,7 +46,7 @@ const App = () => {
     setIsLoading(true);
     const response = await invoke('generate-summary', { projectId, projectKey });
     await setSetting({ lastSummaryGenerationDate: new Date() });
-    if(response === 'ok') clearGoalsOfTheDay();
+    if(response === 'ok') await clearContentOnSubmit();
     setIsLoading(false);
     console.log(response);
   }
