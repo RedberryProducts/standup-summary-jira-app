@@ -24,20 +24,21 @@ const App = () => {
     removeGoalOfTheDay,
     addNewGoalOfTheDay,
     setNewGoalOfTheDay,
-    clearGoalsOfTheDay,
+    clearContentOnSubmit,
     defaultDate,
     handleChange,
-    handleSelectChange,
     setAdditionalNotes,
     insertAdditionalNotes,
-    statuses
 } = useContent();
 
   const {
     slackEndpoint,
     setSlackEndpoint,
     setSetting: _setSetting,
-    isSlackEnpointLoading
+    isSettingsDataLoading,
+    statuses,
+    handleSelectChange,
+    selectedStatuses
   } = useSettings();
 
   const summaryGenerationHandler = async () => {
@@ -45,7 +46,7 @@ const App = () => {
     setIsLoading(true);
     const response = await invoke('generate-summary', { projectId, projectKey });
     await setSetting({ lastSummaryGenerationDate: new Date() });
-    if(response === 'ok') clearGoalsOfTheDay();
+    if(response === 'ok') await clearContentOnSubmit();
     setIsLoading(false);
     console.log(response);
   }
@@ -60,15 +61,21 @@ const App = () => {
   return (
     <>
       <Inline space='space.100'>
-        <Button onClick={() => setSettingsOpened(true)} appearance='subtle'>
-          <Icon glyph='settings' label='Settings' size='large' />
-        </Button>
-        {isSlackEnpointLoading ?  
-          <Spinner size="medium" label="loading" /> : 
-          <Button onClick={handleSummaryGenerationButtonClick} isLoading={isLoading}>
-            Generate Standup Summary
-          </Button>
-        }
+        {isSettingsDataLoading ? (
+          <Spinner size="medium" label="loading" />
+        ) : (
+          <>
+            <Button onClick={() => setSettingsOpened(true)} appearance="subtle">
+              <Icon glyph="settings" label="Settings" size="large" />
+            </Button>
+            <Button
+              onClick={handleSummaryGenerationButtonClick}
+              isLoading={isLoading}
+            >
+              Generate Standup Summary
+            </Button>
+          </>
+        )}
       </Inline>
       <NoSlackEndpointFound
           isVisible={noSlackEnpointModalOpened} 
@@ -76,10 +83,13 @@ const App = () => {
         />
       <Settings
           isVisible={settingsOpened} 
-          setIsVisible={setSettingsOpened}  
           slackEndpoint={slackEndpoint}
+          statuses={statuses}
           setSlackEndpoint={setSlackEndpoint}
           setSetting={_setSetting}
+          setIsVisible={setSettingsOpened}  
+          handleSelectChange={handleSelectChange}
+          selectedStatuses={selectedStatuses}
         />
       <Content           
           isVisible={contentOpened} 
@@ -94,9 +104,7 @@ const App = () => {
           isSubmitFunctionLoading={isLoading}
           defaultDate={defaultDate}
           handleChange={handleChange}
-          handleSelectChange={handleSelectChange}
           setAdditionalNotes={setAdditionalNotes}
-          statuses={statuses}
         />
     </>
   );
