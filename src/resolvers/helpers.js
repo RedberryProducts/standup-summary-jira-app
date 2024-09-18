@@ -47,10 +47,12 @@ const issueTypePluralName = (name) => {
 
   function filterToBeDoneIssues(everyIssue, selectedStatuses) {
     return everyIssue.filter((el) => {
+      const isSubtaskDone = el.statusCategory === 'Done';
+      if (!selectedStatuses) return !isSubtaskDone;
       return (
-        ((el.statusCategory !== 'Done') &&
+        !isSubtaskDone &&
         (el.subtasks.length > 0 || selectedStatuses.includes(el.status))
-      ));
+      );
     });
   }
   
