@@ -44,7 +44,9 @@ class Issue {
             });
         } else {
             this.subtasks = subtasks.map(el => new Issue(el)).filter(el => {
-                return el.statusCategory !== 'Done' && selectedStatuses.includes(el.status)
+                const isSubtaskDone = el.statusCategory === 'Done';
+                if (!selectedStatuses) return !isSubtaskDone;
+                return !isSubtaskDone && selectedStatuses.includes(el.status)
             });
         }
     }
