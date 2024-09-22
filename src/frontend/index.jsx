@@ -49,7 +49,7 @@ const App = () => {
     await setSetting({ lastSummaryGenerationDate: new Date() });
     if(response === 'ok') await clearContentOnSubmit();
     setIsLoading(false);
-    setContentOpened(false);
+    setContentOpened(false)
   }
   const handleSummaryGenerationButtonClick = async () => {
       if(!slackEndpoint) {
