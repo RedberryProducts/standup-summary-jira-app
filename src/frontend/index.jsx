@@ -27,6 +27,7 @@ const App = () => {
     clearContentOnSubmit,
     defaultDate,
     handleChange,
+    additionalNotes,
     setAdditionalNotes,
     insertAdditionalNotes,
 } = useContent();
@@ -48,7 +49,7 @@ const App = () => {
     await setSetting({ lastSummaryGenerationDate: new Date() });
     if(response === 'ok') await clearContentOnSubmit();
     setIsLoading(false);
-    console.log(response);
+    setContentOpened(false);
   }
   const handleSummaryGenerationButtonClick = async () => {
       if(!slackEndpoint) {
@@ -104,6 +105,7 @@ const App = () => {
           isSubmitFunctionLoading={isLoading}
           defaultDate={defaultDate}
           handleChange={handleChange}
+          additionalNotes={additionalNotes}
           setAdditionalNotes={setAdditionalNotes}
         />
     </>

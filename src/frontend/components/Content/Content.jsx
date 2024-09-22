@@ -25,6 +25,7 @@ const Content = ({
     isSubmitFunctionLoading,
     defaultDate,
     handleChange,
+    additionalNotes,
     setAdditionalNotes,
 }) => {
     return (
@@ -70,6 +71,7 @@ const Content = ({
                         id="additional-notes-area"
                         placeholder="Enter additional notes"
                         name="additional-notes"
+                        value={additionalNotes}
                         onChange={(e) => setAdditionalNotes(e.target.value)}
                     />
                     <Label labelFor="date-picker">Choose date</Label>

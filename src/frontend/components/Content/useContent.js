@@ -84,6 +84,7 @@ const useContent = () => {
         clearContentOnSubmit,
         defaultDate,
         handleChange,
+        additionalNotes,
         setAdditionalNotes,
         insertAdditionalNotes,
     };
