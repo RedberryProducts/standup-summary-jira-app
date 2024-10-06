@@ -55,11 +55,27 @@ const issueTypePluralName = (name) => {
       );
     });
   }
+
+  function selectLatestActiveSprint(activeSprints) {
+    return activeSprints.reduce((latest, current) =>
+      new Date(current[endDate]) > new Date(latest[endDate]) ? current : latest
+    );
+  }
+  
+  function selectReleaseVersionsInRange(sprintStartDate, versions) {
+    return versions.filter(
+      (version) =>
+        new Date(version.releaseDate) > new Date(sprintStartDate) ||
+        new Date(version.userReleaseDate) > new Date(sprintStartDate)
+    );
+  }
   
 export {
     countRemainingDays,
     issueTypePluralName,
     selectLatestAttribute,
     filterDoneIssues,
-    filterToBeDoneIssues
+    filterToBeDoneIssues,
+    selectLatestActiveSprint,
+    selectReleaseVersionsInRange,
 }
