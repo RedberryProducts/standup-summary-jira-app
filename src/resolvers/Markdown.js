@@ -154,30 +154,29 @@ class Markdown {
                 {
                   type: "rich_text_section",
                   elements: [
-                    {
-                      type: "text",
-                      style: {
-                        bold: true,
-                      },
+                      {
+                          type: "text",
+                          style: {
+                              bold: true,
+                          },
                       text: "\n\nJob to be Dones:\n\n",
                     },
                   ],
-                },
-                ...workToBeDoneElements,
-                {
+              },
+              ...workToBeDoneElements,
+              {
                   type: "rich_text_section",
                   elements: [
-                    {
-                      type: "text",
-                      style: {
-                        bold: true,
-                      },
-                      text: doneWorkElements.length > 0 ? "\n\nDones:\n\n" : "\n",
-                    },
-                        ...doneWorkElements
-                    ]
-                },
-                ...doneWorkElements,
+                      {
+                          type: "text",
+                          style: {
+                              bold: true,
+                          },
+                          text: doneWorkElements.length > 0 ? "\n\nDones:\n\n" : "\n"
+                      }
+                  ]
+              },
+              ...doneWorkElements
               ],
             },
           ],
