@@ -1,3 +1,4 @@
+import { formatDate } from "./helpers";
 class SlackMessageBlock
 {
     static issueIcons = {
@@ -32,98 +33,98 @@ class SlackMessageBlock
     }
 
     static createStandaloneListItem(issue, jiraUrl) {
-        return {
-            type: "rich_text_list",
-            style: "bullet",
-            indent: 1,
-            border: 0,
+      return {
+        type: "rich_text_list",
+        style: "bullet",
+        indent: 1,
+        border: 0,
+        elements: [
+          {
+            type: "rich_text_section",
             elements: [
-                {
-                    type: "rich_text_section",
-                    elements: [
-                        {
-                            type: "emoji",
-                            name: this.issueIcons[issue?.issuetype] ?? this.issueIcons['DEFAULT'],
-                        },
-                        {
-                            type: "text",
-                            text: " ["
-                        },
-                        {
-                            type: "link",
-                            url: `${jiraUrl}/browse/${issue?.key}`,
-                            text: issue.key,
-                        },
-                        {
-                            type: "text",
-                            text: `] ${issue.summary}`
-                        }
-                    ]
-                },
-            ]
-        };
+              {
+                type: "emoji",
+                              name: this.issueIcons[issue?.issuetype] ?? this.issueIcons['DEFAULT'],
+              },
+              {
+                type: "text",
+                              text: " ["
+              },
+              {
+                type: "link",
+                url: `${jiraUrl}/browse/${issue?.key}`,
+                text: issue.key,
+              },
+              {
+                type: "text",
+                              text: `] ${issue.summary}`
+                          }
+                      ]
+          },
+              ]
+      };
     }
 
     static createSubtasksWithStory(subtasks, story, jiraUrl) {
-        return [
+      return [
+        {
+          type: "rich_text_list",
+          style: "bullet",
+          indent: 1,
+          border: 0,
+          elements: [
             {
-                type: "rich_text_list",
-                style: "bullet",
-                indent: 1,
-                border: 0,
-                elements: [
-                    {
-                        type: "rich_text_section",
-                        elements: [
-                            {
-                                type: "emoji",
-                                name: this.issueIcons[story?.issuetype] ?? this.issueIcons['DEFAULT'],
-                            },
-                            {
-                                type: "text",
-                                text: " "
-                            },
-                            {
-                                type: "link",
-                                url: `${jiraUrl}/browse/${story?.key}`,
-                                text: story?.key,
-                            }
-                        ]
-                    }
-                ]
-            },
-            ...subtasks.map(el => this.createSubtaskListItem(el, jiraUrl)),
-        ];
+              type: "rich_text_section",
+              elements: [
+                {
+                  type: "emoji",
+                                  name: this.issueIcons[story?.issuetype] ?? this.issueIcons['DEFAULT'],
+                },
+                {
+                  type: "text",
+                                  text: " "
+                },
+                {
+                  type: "link",
+                  url: `${jiraUrl}/browse/${story?.key}`,
+                  text: story?.key,
+                              }
+                          ]
+                      }
+                  ]
+        },
+              ...subtasks.map(el => this.createSubtaskListItem(el, jiraUrl)),
+      ];
     }
 
     static createSubtaskListItem(subtask, jiraUrl) {
-        return {
-            type: "rich_text_list",
-            style: "bullet",
-            indent: 2,
-            border: 0,
+      return {
+        type: "rich_text_list",
+        style: "bullet",
+        indent: 2,
+        border: 0,
+        elements: [
+          {
+            type: "rich_text_section",
             elements: [
-                {
-                    type: "rich_text_section",
-                    elements: [
-                        {
-                            type: "text",
-                            text: " ["
-                        },
-                        {
-                            type: "link",
-                            url: `${jiraUrl}/browse/${subtask.key}`,
-                            text: subtask.key,
-                        },
-                        {
-                            type: "text",
-                            text: `] ${subtask.summary}`
-                        }
-                    ]
-                }
-            ]
-        };
-        
+              {
+                type: "text",
+                              text: " ["
+              },
+              {
+                type: "link",
+                url: `${jiraUrl}/browse/${subtask.key}`,
+                text: subtask.key,
+              },
+              {
+                type: "text",
+                              text: `] ${subtask.summary}`
+                          }
+                      ]
+                  }
+              ]
+          };
+          
     }
     static createEmptyLines() {
         return     {
@@ -135,6 +136,39 @@ class SlackMessageBlock
                 }
             ]
         }
+    }
+    static createVersionsLayout(version) {
+      return {
+        type: "rich_text_list",
+        style: "bullet",
+        elements: [
+          {
+            type: "rich_text_section",
+            elements: [
+              {
+                type: "text",
+                text: version.name ?? "Unnamed Version",
+              },
+              {
+                type: "emoji",
+                name: version.released
+                  ? "white_check_mark"
+                  : "hourglass_flowing_sand",
+              },
+              {
+                type: "text",
+                text:
+                  ' - [' + (formatDate(version.userStartDate) ?? version.startDate ?? version.startDate ?? "No Start Date"),
+              },
+              {
+                type: "text",
+                text:
+                  ' - ' +  (formatDate(version.userReleaseDate) ?? version.releaseDate ?? "No End Date") + ']',
+              },
+            ],
+          },
+        ],
+      };
     }
 }
 

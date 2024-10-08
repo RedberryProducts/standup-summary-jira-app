@@ -23,21 +23,41 @@ class Markdown {
         'Done': '✅'
     };
 
+    dividerWithSpacings = [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: " ",
+        },
+      },
+      {
+        type: "divider",
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: " ",
+        },
+      },
+    ];
+
     /**
      * @param {Issue[]} issues 
-     * @param {String} latestUnreleasedVersion 
+     * @param {Collection[]} releaseVersions
      * @param {String} sprintGoal 
      * @param {Number} remainingDays 
      * @param {String[]} goalsOfTheDay 
      */
-    constructor(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues, additionalNotes) {
+    constructor(issues, releaseVersions, sprintGoal, remainingDays, goalsOfTheDay, doneIssues, additionalNotes) {
         this.issues = issues;
         this.doneIssues = doneIssues;
         this.issuesByIssueType = collect(issues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype')
         this.doneIssuesByIssueType = collect(doneIssues).filter(el => el.issuetype !== 'Bug').groupBy('issuetype');
         this.bugGroups = collect(issues).filter(el => el.issuetype === 'Bug');
         this.doneBugGroups = collect(doneIssues).filter(el => el.issuetype === 'Bug');
-        this.latestUnreleasedVersion = latestUnreleasedVersion;
+        this.releaseVersions = releaseVersions;
         this.sprintGoal = sprintGoal;
         this.remainingDays = remainingDays;
         this.goalsOfTheDay = goalsOfTheDay;
@@ -68,7 +88,6 @@ class Markdown {
         .join('\n\n');
 
         let markdown = [
-            this.latestUnreleasedVersion && this.latestUnreleasedVersion.length > 0 ? `\n\n\n*Release Version : ${this.latestUnreleasedVersion}*\n\n` : '',
             remainingDays,
             this.sprintGoal.length > 0 ? `*Sprint Goal*: \n\n${this.sprintGoal}\n\n` : '',
             goalsOfTheDayList && goalsOfTheDayList.length > 0 ? `\n\n*Goal of the Day:*\n\n${goalsOfTheDayList}\n\n\n` : '',
@@ -85,57 +104,83 @@ class Markdown {
         const jiraUrl = await this.getJiraInstanceUrl();
         const workToBeDoneElements = this.generateElements(jiraUrl, workToBeDone, this.issues)
         const doneWorkElements = this.generateElements(jiraUrl, doneWork, this.doneIssues)
+        const versions = this.generateVersionElements(this.releaseVersions);
         return {
-            blocks: [
+          blocks: [
+            {
+              type: "rich_text",
+              elements: [
                 {
-                    type: "section",
-                    text: {
-                        "type": "mrkdwn",
-                        text: markdown
-                    }
+                  type: "rich_text_section",
+                  elements: [
+                    {
+                      type: "text",
+                      style: {
+                        bold: true,
+                      },
+                      text: "\n\nReleases:\n\n",
+                    },
+                  ],
                 },
+                ...versions,
+              ],
+            },
+            ...this.dividerWithSpacings,
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: markdown,
+              },
+            },
+            {
+              type: "rich_text",
+              elements: [
                 {
-                    type: "rich_text",
-                    elements: [
-                        {
-                            type: "rich_text_section",
-                            elements: [
-                                {
-                                    type: "text",
-                                    text: "\n\n"
-                                }
-                            ]
-                        },
-                        {
-                            type: "rich_text_section",
-                            elements: [
-                                {
-                                    type: "text",
-                                    style: {
-                                        bold: true,
-                                    },
-                                    text: "\n\nJob to be Dones:\n\n"
-                                }
-                            ]
-                        },
-                        ...workToBeDoneElements,
-                        {
-                            type: "rich_text_section",
-                            elements: [
-                                {
-                                    type: "text",
-                                    style: {
-                                        bold: true,
-                                    },
-                                    text: doneWorkElements.length > 0 ? "\n\nDones:\n\n" : "\n"
-                                }
-                            ]
-                        },
-                        ...doneWorkElements
-                    ]
+                  type: "rich_text_section",
+                  elements: [
+                    {
+                      type: "text",
+                      text: "\n\n",
+                    },
+                  ],
                 },
-            ]
-        };
+              ],
+            },
+            ...this.dividerWithSpacings,
+            {
+              type: "rich_text",
+              elements: [
+                {
+                  type: "rich_text_section",
+                  elements: [
+                      {
+                          type: "text",
+                          style: {
+                              bold: true,
+                          },
+                      text: "\n\nJob to be Dones:\n\n",
+                    },
+                  ],
+              },
+              ...workToBeDoneElements,
+              {
+                  type: "rich_text_section",
+                  elements: [
+                      {
+                          type: "text",
+                          style: {
+                              bold: true,
+                          },
+                          text: doneWorkElements.length > 0 ? "\n\nDones:\n\n" : "\n"
+                      }
+                  ]
+              },
+              ...doneWorkElements
+              ],
+            },
+          ],
+        };      
     }
 
     /**
@@ -200,6 +245,9 @@ class Markdown {
                 SlackMessageBlock.createEmptyLines(),
             ]
         }).toArray().flat();
+    }
+    generateVersionElements(versions) {
+      return versions.map(version => SlackMessageBlock.createVersionsLayout(version));
     }
 }
 

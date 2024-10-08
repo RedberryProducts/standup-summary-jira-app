@@ -2,9 +2,9 @@ import Markdown from './Markdown';
 import Issue from './Issue';
 import api, { route, storage } from '@forge/api';
 
-const sendMessage = async (issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId, doneIssues) => {
+const sendMessage = async (issues, releaseVersions, sprintGoal, remainingDays, goalsOfTheDay, projectId, doneIssues) => {
     const { slackEndpoint, additionalNotes }= await storage.get(`settings-${projectId}`) || {};
-    const body = await (new Markdown(issues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, doneIssues, additionalNotes)).generateBlocks();
+    const body = await (new Markdown(issues, releaseVersions, sprintGoal, remainingDays, goalsOfTheDay, doneIssues, additionalNotes)).generateBlocks();
     await api.fetch(slackEndpoint, {
         body: JSON.stringify(body),
         method: 'POST',
@@ -40,9 +40,8 @@ const getIssuesForSprints = async (sprints, projectKey, isDone) => {
     return extractedIssues.map(el => new Issue(el, projectKey)).filter(el => el.statusCategory !== 'Done');;
 }
 
-const getBoardUnreleasedVersions = async (boardId) => {
-    const { values: versions } = await (await api.asApp().requestJira(route`rest/agile/1.0/board/${boardId}/version?released=false`)).json();    
-    return versions;
+const getBoardUnreleasedVersions = async (projectId) => {
+    return (await api.asApp().requestJira(route`/rest/api/2/project/${projectId}/versions`)).json();
 }
 
 

@@ -1,7 +1,7 @@
 import Resolver from '@forge/resolver';
 import { sendMessage, getBoard, getActiveSprints, getIssuesForSprints, getBoardUnreleasedVersions, getBoardStatus } from './services';
 import { storage } from '@forge/api';
-import { countRemainingDays, selectLatestAttribute, filterDoneIssues, filterToBeDoneIssues} from './helpers';
+import { countRemainingDays, selectLatestAttribute, filterDoneIssues, filterToBeDoneIssues, selectLatestActiveSprint, selectReleaseVersionsInRange } from './helpers';
 
 const resolver = new Resolver();
 
@@ -26,10 +26,11 @@ resolver.define('generate-summary', async (req) => {
   const remainingDays = countRemainingDays(activeSprints.map(el => el.endDate));
   const sprintGoal =  selectLatestAttribute(activeSprints.map(({ goal, endDate }) => ({ goal, endDate })), 'endDate', 'goal'); 
 
-  const boardUnreleasedVersions = await getBoardUnreleasedVersions(foundBoard.id)
-  const latestUnreleasedVersion = selectLatestAttribute(boardUnreleasedVersions.map(({ name, releaseDate }) => ({ name, releaseDate })), 'releaseDate', 'name')
+  const boardVersions = await getBoardUnreleasedVersions(projectId);
+  const { startDate } = selectLatestActiveSprint(activeSprints);
+  const releaseVersions = selectReleaseVersionsInRange(startDate,boardVersions);
 
-  await sendMessage(toBeDoneIssues, latestUnreleasedVersion, sprintGoal, remainingDays, goalsOfTheDay, projectId, doneIssues);
+  await sendMessage(toBeDoneIssues, releaseVersions, sprintGoal, remainingDays, goalsOfTheDay, projectId, doneIssues);
   
   return 'ok';
 });
